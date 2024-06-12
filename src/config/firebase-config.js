@@ -5,13 +5,13 @@ import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "google_api",
-  authDomain: "planpal-65592.firebaseapp.com",
-  databaseURL:
-    "https://planpal-65592-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "planpal-65592",
-  storageBucket: "planpal-65592.appspot.com",
-  messagingSenderId: "703107405045",
-  appId: "1:703107405045:web:8cced77b583a037f77e1bc",
+  authDomain: "Domain",
+  databaseURL: "URL",
+  projectId: "planpal-final",
+  storageBucket: "storageBucket",
+  messagingSenderId: "SenderId",
+  appId: "1:SenderId:web:78adcec825ee0fc8784f33",
+  measurementId: "Id"
 };
 
 
