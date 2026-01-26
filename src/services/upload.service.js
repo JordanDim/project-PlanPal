@@ -1,12 +1,20 @@
-import { storage } from "../config/firebase-config";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { UploadClient } from "@uploadcare/upload-client";
+
+const uploadClient = new UploadClient({
+  publicKey: import.meta.env.VITE_UPLOADCARE_PUBLIC_KEY,
+});
+
+const getCustomCdnUrl = (uuid, filename) => {
+  return `https://1k9gq2zpdb.ucarecd.net/${uuid}/${filename}`;
+};
 
 export const uploadAvatar = async (userId, file) => {
   try {
-    const avatarRef = ref(storage, `avatars/${userId}`);
-    await uploadBytes(avatarRef, file);
-    const downloadURL = await getDownloadURL(avatarRef);
-    return downloadURL;
+    const result = await uploadClient.uploadFile(file, {
+      fileName: `avatar${userId}`,
+      store: "auto",
+    });
+    return getCustomCdnUrl(result.uuid, `avatar${userId}`);
   } catch (error) {
     console.error("Error uploading avatar:", error);
     throw error;
@@ -15,10 +23,11 @@ export const uploadAvatar = async (userId, file) => {
 
 export const uploadCover = async (eventId, file) => {
   try {
-    const coverRef = ref(storage, `covers/${eventId}`);
-    await uploadBytes(coverRef, file);
-    const downloadURL = await getDownloadURL(coverRef);
-    return downloadURL;
+    const result = await uploadClient.uploadFile(file, {
+      fileName: `cover${eventId}`,
+      store: "auto",
+    });
+    return getCustomCdnUrl(result.uuid, `cover${eventId}`);
   } catch (error) {
     console.error("Error uploading cover:", error);
     throw error;
