@@ -66,7 +66,7 @@ export default function Register() {
         phoneNumber: form.phoneNumber,
         address: form.address || "No address provided",
         avatar:
-          "https://firebasestorage.googleapis.com/v0/b/planpal-65592.appspot.com/o/avatars%2Fdefault-profile.png?alt=media&token=fd3e31cf-95d7-4bbd-a9e4-7155048663dd",
+          "https://1k9gq2zpdb.ucarecd.net/bbc51f44-ccbf-4a92-a74d-8d40e43d652a/defaultprofile.png",
         handle: form.userName,
         isBlocked: false,
         role: "User",

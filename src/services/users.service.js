@@ -71,10 +71,10 @@ export const getUserAvatar = async (handle) => {
     if (snapshot.exists()) {
       return snapshot.val();
     } else {
-      return "https://via.placeholder.com/40";
+      return "https://1k9gq2zpdb.ucarecd.net/bbc51f44-ccbf-4a92-a74d-8d40e43d652a/defaultprofile.png";
     }
   } catch (error) {
     console.error("Error fetching avatar:", error);
-    return "https://via.placeholder.com/40"; 
+    return "https://1k9gq2zpdb.ucarecd.net/bbc51f44-ccbf-4a92-a74d-8d40e43d652a/defaultprofile.png";
   }
 };
