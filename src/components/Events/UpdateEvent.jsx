@@ -8,20 +8,10 @@ import {
   inviteUser,
   uninviteUser,
 } from "../../services/event.service.js";
-import {
-  validateTitle,
-  validateDescription,
-  validateLocation,
-  validateStartDate,
-  validateEndDate,
-  validateStartTime,
-  validateEndTime,
-} from "../../common/helpers/validationHelpers.js";
 import Button from "../Button.jsx";
 import {
   GoBackArrow,
   DeleteEvent,
-  ArrowDown,
 } from "../../common/helpers/icons.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
 import { uploadCover } from "../../services/upload.service.js";
@@ -29,9 +19,11 @@ import "./styles.css";
 import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
 import showConfirmDialog from "../ConfirmDialog.jsx";
 import { BASE } from "../../common/constants.js";
-
-const MAPBOX_TOKEN =
-  "secret_token";
+import { useLocationAutocomplete } from "../../hooks/useLocationAutocomplete.js";
+import { useEventFormValidation } from "../../hooks/useEventFormValidation.js";
+import EventFormFields from "./form/EventFormFields.jsx";
+import ReoccurringSelect from "./form/ReoccurringSelect.jsx";
+import CategorySelect from "./form/CategorySelect.jsx";
 
 export default function UpdateEvent() {
   const { eventId } = useParams();
@@ -42,16 +34,18 @@ export default function UpdateEvent() {
   const [contacts, setContacts] = useState([]);
   const [finalDate, setFinalDate] = useState("");
   const [isIndefinite, setIsIndefinite] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
   const inviteRef = useRef(null);
   const uninviteRef = useRef(null);
   const fileInputRef = useRef(null);
-  const reoccurringRef = useRef(null);
-  const categoryRef = useRef(null);
   const [isReoccurringOpen, setIsReoccurringOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+
+  const { suggestions, handleLocationChange, handleSuggestionClick } =
+    useLocationAutocomplete();
+
+  const { validateEventForm } = useEventFormValidation(event);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -84,20 +78,11 @@ export default function UpdateEvent() {
   }, [userData]);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        reoccurringRef.current &&
-        !reoccurringRef.current.contains(event.target)
-      ) {
-        setIsReoccurringOpen(false);
-      }
-      if (categoryRef.current && !categoryRef.current.contains(event.target)) {
-        setIsCategoryOpen(false);
-      }
-      if (inviteRef.current && !inviteRef.current.contains(event.target)) {
+    function handleClickOutside(e) {
+      if (inviteRef.current && !inviteRef.current.contains(e.target)) {
         inviteRef.current.removeAttribute("open");
       }
-      if (uninviteRef.current && !uninviteRef.current.contains(event.target)) {
+      if (uninviteRef.current && !uninviteRef.current.contains(e.target)) {
         uninviteRef.current.removeAttribute("open");
       }
     }
@@ -106,7 +91,7 @@ export default function UpdateEvent() {
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
-  }, [reoccurringRef, categoryRef, inviteRef, uninviteRef]);
+  }, []);
 
   const updateEventData = (value, key) => {
     setEvent({
@@ -116,30 +101,7 @@ export default function UpdateEvent() {
   };
 
   const handleUpdateEvent = async () => {
-    const {
-      title,
-      description,
-      location,
-      startDate,
-      startTime,
-      endDate,
-      endTime,
-    } = event;
-
-    const validationErrors = {
-      title: validateTitle(title),
-      description: validateDescription(description),
-      location: validateLocation(location),
-      startDate: validateStartDate(startDate),
-      startTime: validateStartTime(startTime),
-      endDate: validateEndDate(endDate, startDate),
-      endTime: validateEndTime(endTime),
-    };
-
-    const filteredErrors = Object.keys(validationErrors).reduce((acc, key) => {
-      if (validationErrors[key]) acc[key] = validationErrors[key];
-      return acc;
-    }, {});
+    const filteredErrors = validateEventForm();
 
     if (Object.keys(filteredErrors).length > 0) {
       setErrors(filteredErrors);
@@ -232,25 +194,15 @@ export default function UpdateEvent() {
     }
   };
 
-  const handleLocationChange = async (e) => {
+  const onLocationChange = (e) => {
     const value = e.target.value;
-    updateEventData(value, "location");
-    if (value.length > 2) {
-      const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-          value
-        )}.json?access_token=${MAPBOX_TOKEN}`
-      );
-      const data = await response.json();
-      setSuggestions(data.features.map((feature) => feature.place_name));
-    } else {
-      setSuggestions([]);
-    }
+    handleLocationChange(value, (newValue) => updateEventData(newValue, "location"));
   };
 
-  const handleSuggestionClick = (suggestion) => {
-    updateEventData(suggestion, "location");
-    setSuggestions([]);
+  const onSuggestionClick = (suggestion) => {
+    handleSuggestionClick(suggestion, (newValue) =>
+      updateEventData(newValue, "location")
+    );
   };
 
   if (!event) return <div className="text-center mt-10">No event found.</div>;
@@ -331,191 +283,46 @@ export default function UpdateEvent() {
           <GoBackArrow onClick={() => navigate(`${BASE}events/${eventId}`)} />
         </div>
       </div>
-      {[
-        { label: "Title", key: "title", type: "text" },
-        { label: "Start Date", key: "startDate", type: "date" },
-        { label: "Start Time", key: "startTime", type: "time" },
-        { label: "End Date", key: "endDate", type: "date" },
-        { label: "End Time", key: "endTime", type: "time" },
-        { label: "Location", key: "location", type: "text" },
-        { label: "Description", key: "description", type: "textarea" },
-      ].map(({ label, key, type }) => (
-        <div key={key} className={`event-${key} mb-4`}>
-          <label htmlFor={`input-${key}`} className="block font-semibold mb-1">
-            {label}:
-          </label>
-          <div className="input-field relative">
-            {type === "textarea" ? (
-              <textarea
-                className="textarea textarea-bordered textarea-sm w-full"
-                value={event[key]}
-                onChange={(e) => updateEventData(e.target.value, key)}
-                name={`input-${key}`}
-                id={`input-${key}`}
-                cols="30"
-                rows="10"
-              ></textarea>
-            ) : (
-              <input
-                className="w-full p-2 border rounded bg-white"
-                type={type}
-                value={event[key]}
-                onChange={(e) =>
-                  type === "text" && key === "location"
-                    ? handleLocationChange(e)
-                    : updateEventData(e.target.value, key)
-                }
-                name={`input-${key}`}
-                id={`input-${key}`}
-              />
-            )}
-            {errors[key] && (
-              <div className="text-red-500 text-sm mt-1">{errors[key]}</div>
-            )}
-            {key === "location" && suggestions.length > 0 && (
-              <ul className="order border-gray-300 rounded mt-1 max-h-40 overflow-y-auto absolute z-50 backdrop-blur-lg bg-white/10 text-black">
-                {suggestions.map((suggestion, index) => (
-                  <li
-                    key={index}
-                    className="p-2 hover:glass cursor-pointer"
-                    onClick={() => handleSuggestionClick(suggestion)}
-                  >
-                    {suggestion}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-      ))}
 
-      <div className="flex items-center space-x-2 mb-4">
-        <label className="font-semibold">Public Event:</label>
-        <input
-          type="checkbox"
-          checked={event.isPublic}
-          onChange={(e) => updateEventData(e.target.checked, "isPublic")}
+      <EventFormFields
+        event={event}
+        onUpdate={updateEventData}
+        errors={errors}
+        onLocationChange={onLocationChange}
+        onSuggestionClick={onSuggestionClick}
+        locationSuggestions={suggestions}
+      >
+        <div className="flex items-center space-x-2 mb-4">
+          <label className="font-semibold">Public Event:</label>
+          <input
+            type="checkbox"
+            checked={event.isPublic}
+            onChange={(e) => updateEventData(e.target.checked, "isPublic")}
+          />
+        </div>
+
+        <ReoccurringSelect
+          value={event.isReoccurring}
+          onUpdate={(value) => updateEventData(value, "isReoccurring")}
+          isOpen={isReoccurringOpen}
+          onToggle={setIsReoccurringOpen}
+          finalDate={finalDate}
+          isIndefinite={isIndefinite}
+          onFinalDateChange={(value) => {
+            setFinalDate(value);
+            updateEventData(value, "finalDate");
+          }}
+          onIndefiniteChange={setIsIndefinite}
         />
-      </div>
 
-      <div className="mb-4 relative" ref={reoccurringRef}>
-        <label htmlFor="reoccurring-option" className="block font-semibold">
-          Reoccurring:
-        </label>
-        <div className="mt-1 relative">
-          <button
-            type="button"
-            className="w-full rounded-md shadow-sm pl-3 pr-10 py-2 text-left focus:outline-none sm:text-sm border-2 border-gray-700 bg-white"
-            id="reoccurring-option"
-            onClick={() => setIsReoccurringOpen(!isReoccurringOpen)}
-          >
-            <span className="block truncate">
-              {event.isReoccurring ? event.isReoccurring : "Select Occurrence"}
-            </span>
-            <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-              <ArrowDown />
-            </span>
-          </button>
-          {isReoccurringOpen && (
-            <div
-              className="origin-top-right absolute mt-1 w-full rounded-md backdrop-blur-lg bg-white/10 ring-1 ring-black ring-opacity-5 border-2 border-gray-700 text-black"
-              style={{ zIndex: 999 }}
-            >
-              {["never", "weekly", "monthly", "yearly"].map((option) => (
-                <div
-                  key={option}
-                  className="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:glass"
-                  onClick={() => {
-                    updateEventData(option, "isReoccurring");
-                    setIsReoccurringOpen(false);
-                    if (["weekly", "monthly", "yearly"].includes(option)) {
-                      setFinalDate("");
-                      setIsIndefinite(false);
-                    }
-                  }}
-                >
-                  <span className="block truncate">{option}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        {["weekly", "monthly", "yearly"].includes(event.isReoccurring) && (
-          <div className="mt-4">
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={isIndefinite}
-                onChange={(e) => setIsIndefinite(e.target.checked)}
-                className="h-4 w-4 rounded"
-              />
-              <label className="ml-2 text-sm font-medium">Indefinitely</label>
-            </div>
-            {!isIndefinite && (
-              <>
-                <label
-                  htmlFor="final-date"
-                  className="block text-sm font-medium mt-2"
-                >
-                  Final Date:
-                </label>
-                <input
-                  type="date"
-                  id="final-date"
-                  className="mt-1 block w-full rounded-md shadow-sm sm:text-sm"
-                  value={finalDate}
-                  onChange={(e) => {
-                    setFinalDate(e.target.value);
-                    updateEventData(e.target.value, "finalDate");
-                  }}
-                />
-              </>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className="mb-4 relative" ref={categoryRef}>
-        <label htmlFor="category-option" className="block font-semibold">
-          Category:
-        </label>
-        <div className="mt-1 relative">
-          <button
-            type="button"
-            className="w-full rounded-md shadow-sm pl-3 pr-10 py-2 text-left focus:outline-none sm:text-sm border-2 border-gray-700 bg-white"
-            id="category-option"
-            onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-          >
-            <span className="block truncate">
-              {event.category ? event.category : "Select Category"}
-            </span>
-            <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-              <ArrowDown />
-            </span>
-          </button>
-          {isCategoryOpen && (
-            <div
-              className="origin-top-right absolute mt-1 w-full rounded-md backdrop-blur-lg bg-white/10 ring-1 ring-black ring-opacity-5 border-2 border-gray-700 text-black"
-              style={{ zIndex: 999 }}
-            >
-              {["Entertainment", "Sports", "Culture & Science"].map(
-                (option) => (
-                  <div
-                    key={option}
-                    className="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:glass"
-                    onClick={() => {
-                      updateEventData(option, "category");
-                      setIsCategoryOpen(false);
-                    }}
-                  >
-                    <span className="block truncate">{option}</span>
-                  </div>
-                )
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+        <CategorySelect
+          value={event.category}
+          onUpdate={(value) => updateEventData(value, "category")}
+          isOpen={isCategoryOpen}
+          onToggle={setIsCategoryOpen}
+          includeOther={false}
+        />
+      </EventFormFields>
 
       <div className="flex space-x-4">
         <Button className="btn btn-primary" onClick={handleUpdateEvent}>

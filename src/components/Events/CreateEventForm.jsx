@@ -10,16 +10,7 @@ import {
 import { uploadCover } from "../../services/upload.service.js";
 import Button from "../Button.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
-import {
-  validateTitle,
-  validateDescription,
-  validateLocation,
-  validateStartDate,
-  validateEndDate,
-  validateStartTime,
-  validateEndTime,
-} from "../../common/helpers/validationHelpers.js";
-import { ArrowDown, GoBackArrow } from "../../common/helpers/icons.jsx";
+import { GoBackArrow } from "../../common/helpers/icons.jsx";
 import {
   EVENT_SPORTS_COVER,
   EVENT_ENTERTAINMENT_COVER,
@@ -30,9 +21,11 @@ import {
 import Map from "./Map.jsx";
 import "./styles.css";
 import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
-
-const MAPBOX_TOKEN =
-  "secret_token";
+import { useLocationAutocomplete } from "../../hooks/useLocationAutocomplete.js";
+import { useEventFormValidation } from "../../hooks/useEventFormValidation.js";
+import EventFormFields from "./form/EventFormFields.jsx";
+import ReoccurringSelect from "./form/ReoccurringSelect.jsx";
+import CategorySelect from "./form/CategorySelect.jsx";
 
 export default function CreateEvent() {
   const [event, setEvent] = useState({
@@ -56,35 +49,25 @@ export default function CreateEvent() {
   const navigate = useNavigate();
   const inviteRef = useRef(null);
   const inviteListRef = useRef(null);
-  const reoccurringRef = useRef(null);
-  const categoryRef = useRef(null);
   const [isReoccurringOpen, setIsReoccurringOpen] = useState(false);
-  const [selectedReoccurringOption, setSelectedReoccurringOption] =
-    useState(null);
   const [finalDate, setFinalDate] = useState("");
   const [isIndefinite, setIsIndefinite] = useState(false);
-  const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [coverPreview, setCoverPreview] = useState(null);
-  const [suggestions, setSuggestions] = useState([]);
+
+  const { suggestions, handleLocationChange, handleSuggestionClick } =
+    useLocationAutocomplete();
+
+  const { validateEventForm } = useEventFormValidation(event);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        reoccurringRef.current &&
-        !reoccurringRef.current.contains(event.target)
-      ) {
-        setIsReoccurringOpen(false);
-      }
-      if (categoryRef.current && !categoryRef.current.contains(event.target)) {
-        setIsCategoryOpen(false);
-      }
-      if (inviteRef.current && !inviteRef.current.contains(event.target)) {
+    function handleClickOutside(e) {
+      if (inviteRef.current && !inviteRef.current.contains(e.target)) {
         inviteRef.current.removeAttribute("open");
       }
       if (
         inviteListRef.current &&
-        !inviteListRef.current.contains(event.target)
+        !inviteListRef.current.contains(e.target)
       ) {
         inviteListRef.current.removeAttribute("open");
       }
@@ -94,7 +77,7 @@ export default function CreateEvent() {
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
-  }, [reoccurringRef, categoryRef, inviteRef, inviteListRef]);
+  }, []);
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -152,40 +135,16 @@ export default function CreateEvent() {
     }
   };
 
-  const handleLocationChange = async (e) => {
+  const onLocationChange = (e) => {
     const value = e.target.value;
-    updateEvent(value, "location");
-    if (value.length > 2) {
-      const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-          value
-        )}.json?access_token=${MAPBOX_TOKEN}`
-      );
-      const data = await response.json();
-      setSuggestions(data.features.map((feature) => feature.place_name));
-    } else {
-      setSuggestions([]);
-    }
+    handleLocationChange(value, (newValue) => updateEvent(newValue, "location"));
   };
 
-  const handleSuggestionClick = (suggestion) => {
-    updateEvent(suggestion, "location");
-    setSuggestions([]);
+  const onSuggestionClick = (suggestion) => {
+    handleSuggestionClick(suggestion, (newValue) =>
+      updateEvent(newValue, "location")
+    );
   };
-
-  const recurrenceOptions = [
-    { value: "never", label: "Never" },
-    { value: "weekly", label: "Weekly" },
-    { value: "monthly", label: "Monthly" },
-    { value: "yearly", label: "Yearly" },
-  ];
-
-  const categoryOptions = [
-    { value: "Entertainment", label: "Entertainment" },
-    { value: "Sports", label: "Sports" },
-    { value: "Culture & Science", label: "Culture & Science" },
-    { value: "Other", label: "Other" },
-  ];
 
   const getDefaultCoverByCategory = (category) => {
     switch (category) {
@@ -201,31 +160,7 @@ export default function CreateEvent() {
   };
 
   const createEvent = async () => {
-    const {
-      title,
-      description,
-      location,
-      startDate,
-      startTime,
-      endDate,
-      endTime,
-      category,
-    } = event;
-
-    const validationErrors = {
-      title: validateTitle(title),
-      description: validateDescription(description),
-      location: validateLocation(location),
-      startDate: validateStartDate(startDate),
-      startTime: validateStartTime(startTime),
-      endDate: validateEndDate(endDate, startDate),
-      endTime: validateEndTime(endTime),
-    };
-
-    const filteredErrors = Object.keys(validationErrors).reduce((acc, key) => {
-      if (validationErrors[key]) acc[key] = validationErrors[key];
-      return acc;
-    }, {});
+    const filteredErrors = validateEventForm();
 
     if (Object.keys(filteredErrors).length > 0) {
       setErrors(filteredErrors);
@@ -237,7 +172,7 @@ export default function CreateEvent() {
       if (coverFile) {
         coverURL = await uploadCover(event.title, coverFile);
       } else {
-        coverURL = getDefaultCoverByCategory(category);
+        coverURL = getDefaultCoverByCategory(event.category);
       }
 
       const newEvent = await addEvent(
@@ -290,244 +225,48 @@ export default function CreateEvent() {
         <GoBackArrow onClick={() => navigate(`${BASE}events`)} />
       </div>
 
-      <div className="flex flex-wrap -mx-2">
-        {[
-          { label: "Title", key: "title", type: "text" },
-          { label: "Location", key: "location", type: "text" },
-        ].map(({ label, key, type }) => (
-          <div key={key} className="mb-4 px-2 w-full sm:w-1/2 relative">
-            <label
-              htmlFor={`input-${key}`}
-              className="block text-sm font-medium"
-            >
-              {label} <span className="text-red-500">*</span>:
-            </label>
-            <div className="mt-1">
-              <input
-                type={type}
-                value={event[key]}
-                onChange={(e) =>
-                  key === "location"
-                    ? handleLocationChange(e)
-                    : updateEvent(e.target.value, key)
-                }
-                name={`input-${key}`}
-                id={`input-${key}`}
-                className="shadow-sm block w-full sm:text-sm rounded-md"
-              />
-              {errors[key] && (
-                <div className="text-red-500 text-sm">{errors[key]}</div>
-              )}
-              {key === "location" && suggestions.length > 0 && (
-                <ul className="border border-gray-300 rounded mt-1 max-h-40 w-full overflow-y-auto absolute z-50 backdrop-blur-lg bg-white/10 text-black">
-                  {suggestions.map((suggestion, index) => (
-                    <li
-                      key={index}
-                      className="p-2 hover:glass cursor-pointer"
-                      onClick={() => handleSuggestionClick(suggestion)}
-                    >
-                      {suggestion}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+      <EventFormFields
+        event={event}
+        onUpdate={updateEvent}
+        errors={errors}
+        onLocationChange={onLocationChange}
+        onSuggestionClick={onSuggestionClick}
+        locationSuggestions={suggestions}
+      >
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Public Event:</label>
+          <div className="mt-1">
+            <input
+              type="checkbox"
+              checked={event.isPublic}
+              onChange={(e) => updateEvent(e.target.checked, "isPublic")}
+              className="h-4 w-4 rounded"
+            />
           </div>
-        ))}
-      </div>
-
-      <div className="flex flex-wrap -mx-2">
-        {[
-          { label: "Start Date", key: "startDate", type: "date" },
-          { label: "Start Time", key: "startTime", type: "time" },
-          { label: "End Date", key: "endDate", type: "date" },
-          { label: "End Time", key: "endTime", type: "time" },
-        ].map(({ label, key, type }) => (
-          <div key={key} className="mb-4 px-2 w-full sm:w-1/2">
-            <label
-              htmlFor={`input-${key}`}
-              className="block text-sm font-medium"
-            >
-              {label} <span className="text-red-500">*</span>:
-            </label>
-            <div className="mt-1">
-              <input
-                type={type}
-                value={event[key]}
-                onChange={(e) => updateEvent(e.target.value, key)}
-                name={`input-${key}`}
-                id={`input-${key}`}
-                className="shadow-sm block w-full sm:text-sm rounded-md"
-              />
-              {errors[key] && (
-                <div className="text-red-500 text-sm">{errors[key]}</div>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mb-4">
-        <label
-          htmlFor="input-description"
-          className="block text-sm font-medium"
-        >
-          Description:
-        </label>
-        <div className="mt-1">
-          <textarea
-            id="input-description"
-            className="textarea textarea-bordered textarea-sm w-full"
-            value={event.description}
-            onChange={(e) => updateEvent(e.target.value, "description")}
-          ></textarea>
-          {errors.description && (
-            <div className="text-red-500 text-sm">{errors.description}</div>
-          )}
         </div>
-      </div>
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium">Public Event:</label>
-        <div className="mt-1">
-          <input
-            type="checkbox"
-            checked={event.isPublic}
-            onChange={(e) => updateEvent(e.target.checked, "isPublic")}
-            className="h-4 w-4 rounded"
-          />
-        </div>
-      </div>
+        <ReoccurringSelect
+          value={event.isReoccurring}
+          onUpdate={(value) => updateEvent(value, "isReoccurring")}
+          isOpen={isReoccurringOpen}
+          onToggle={setIsReoccurringOpen}
+          finalDate={finalDate}
+          isIndefinite={isIndefinite}
+          onFinalDateChange={(value) => {
+            setFinalDate(value);
+            updateEvent(value, "finalDate");
+          }}
+          onIndefiniteChange={setIsIndefinite}
+        />
 
-      <div className="mb-4" ref={reoccurringRef}>
-        <label
-          htmlFor="reoccurring-option"
-          className="block text-sm font-medium"
-        >
-          Reoccurring:
-        </label>
-        <div className="mt-1 relative">
-          <button
-            type="button"
-            className="w-full rounded-md shadow-sm pl-3 pr-10 py-2 text-left sm:text-sm"
-            onClick={() => setIsReoccurringOpen(!isReoccurringOpen)}
-          >
-            <span className="block truncate">
-              {selectedReoccurringOption
-                ? selectedReoccurringOption.label
-                : "Select Occurrence"}
-            </span>
-            <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-              <ArrowDown />
-            </span>
-          </button>
-          {isReoccurringOpen && (
-            <div
-              className="origin-top-right absolute mt-1 w-full rounded-md backdrop-blur-lg bg-white/10 ring-1 text-black ring-black ring-opacity-5"
-              style={{ zIndex: 999 }}
-            >
-              {recurrenceOptions.map((option) => (
-                <div
-                  key={option.value}
-                  className="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:glass"
-                  onClick={() => {
-                    setSelectedReoccurringOption(option);
-                    setIsReoccurringOpen(false);
-                    updateEvent(option.value, "isReoccurring");
-                    if (
-                      ["weekly", "monthly", "yearly"].includes(option.value)
-                    ) {
-                      setFinalDate("");
-                      setIsIndefinite(false);
-                    }
-                  }}
-                >
-                  <span className="block truncate">{option.label}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        {selectedReoccurringOption &&
-          ["weekly", "monthly", "yearly"].includes(
-            selectedReoccurringOption.value
-          ) && (
-            <div className="mt-4">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={isIndefinite}
-                  onChange={(e) => setIsIndefinite(e.target.checked)}
-                  className="h-4 w-4 rounded"
-                />
-                <label className="ml-2 text-sm font-medium">Indefinitely</label>
-              </div>
-              {!isIndefinite && (
-                <>
-                  <label
-                    htmlFor="final-date"
-                    className="block text-sm font-medium mt-2"
-                  >
-                    Final Date:
-                  </label>
-                  <input
-                    type="date"
-                    id="final-date"
-                    className="mt-1 block w-full rounded-md shadow-sm sm:text-sm"
-                    value={finalDate}
-                    onChange={(e) => {
-                      setFinalDate(e.target.value);
-                      updateEvent(e.target.value, "finalDate");
-                    }}
-                  />
-                </>
-              )}
-            </div>
-          )}
-      </div>
-
-      <div className="mb-4 relative" ref={categoryRef}>
-        <label htmlFor="category" className="block text-sm font-medium">
-          Category:
-        </label>
-        <div className="mt-1 relative">
-          <button
-            type="button"
-            className="w-full rounded-md shadow-sm pl-3 pr-10 py-2 text-left focus:outline-none sm:text-sm"
-            id="category"
-            onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-          >
-            <span className="block truncate">
-              {selectedCategoryOption
-                ? selectedCategoryOption.label
-                : "Select Category"}
-            </span>
-            <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-              <ArrowDown />
-            </span>
-          </button>
-          {isCategoryOpen && (
-            <div
-              className="origin-top-right absolute mt-1 w-full rounded-md  backdrop-blur-lg bg-white/10 ring-1 text-black ring-black ring-opacity-5"
-              style={{ zIndex: 999 }}
-            >
-              {categoryOptions.map((option) => (
-                <div
-                  key={option.value}
-                  className="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:glass"
-                  onClick={() => {
-                    setSelectedCategoryOption(option);
-                    setIsCategoryOpen(false);
-                    updateEvent(option.value, "category");
-                  }}
-                >
-                  <span className="block truncate">{option.label}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+        <CategorySelect
+          value={event.category}
+          onUpdate={(value) => updateEvent(value, "category")}
+          isOpen={isCategoryOpen}
+          onToggle={setIsCategoryOpen}
+          includeOther={true}
+        />
+      </EventFormFields>
 
       <div>
         {coverPreview && (
