@@ -22,7 +22,7 @@ export default function AllEvents() {
   const {
     userData,
     loading: userLoading,
-    setAppState,
+    setUserData,
   } = useContext(AppContext);
   const navigate = useNavigate();
   const categoriesRef = useRef(null);
@@ -93,7 +93,7 @@ export default function AllEvents() {
           [eventTitle]: true,
         },
       };
-      setAppState(updatedUserData);
+      setUserData(updatedUserData);
       navigate(`${BASE}my-events`);
     }
   };
@@ -110,7 +110,7 @@ export default function AllEvents() {
         themeChecker("You have left the event successfully!");
         const updatedGoingToEvents = { ...userData.goingToEvents };
         updatedGoingToEvents[eventTitle] = false;
-        setAppState({
+        setUserData({
           ...userData,
           goingToEvents: updatedGoingToEvents,
         });

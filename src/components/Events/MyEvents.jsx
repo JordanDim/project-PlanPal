@@ -15,7 +15,7 @@ export default function MyEvents() {
   const {
     userData,
     loading: userLoading,
-    setAppState,
+    setUserData,
   } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -43,7 +43,7 @@ export default function MyEvents() {
         themeChecker("You have left the event successfully!");
         const updatedGoingToEvents = { ...userData.goingToEvents };
         updatedGoingToEvents[eventTitle] = false;
-        setAppState({
+        setUserData({
           ...userData,
           goingToEvents: updatedGoingToEvents,
         });

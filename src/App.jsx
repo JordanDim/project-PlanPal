@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { app, auth } from "./config/firebase-config.js";
 import Home from "./views/Home.jsx";
 import Dashboard from "./views/Dashboard.jsx";
 import Footer from "./components/Footer.jsx";
@@ -9,8 +7,8 @@ import Header from "./components/Header.jsx";
 import NotFound from "./views/NotFound.jsx";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
-import { AppContext } from "./context/AppContext.jsx";
-import { getUserData } from "./services/users.service.js";
+import { AppProvider, AppContext } from "./context/AppContext.jsx";
+import LoadingSpinner from "./components/Loading/LoadingSpinner";
 import Profile from "./components/Profile/Profile.jsx";
 import withLoading from "./hoc/PageLoading.jsx";
 import CreateEventForm from "./components/Events/CreateEventForm.jsx";
@@ -46,70 +44,46 @@ const PrivateEventsWithLoading = withLoading(PrivateEvents);
 const SingleViewEventWithLoading = withLoading(SingleViewEvent);
 
 function App() {
-  const [appState, setAppState] = useState({
-    user: null,
-    userData: null,
-  });
-  const [user] = useAuthState(auth);
+  return (
+    <BrowserRouter>
+      <AppProvider>
+        <ToastContainer newestOnTop />
+        <AppContent />
+      </AppProvider>
+    </BrowserRouter>
+  );
+}
 
-  useEffect(() => {
-    if (appState.user !== user) {
-      setAppState((prevState) => ({
-        ...prevState,
-        user,
-      }));
-    }
-  }, [user, appState.user]);
-
-  useEffect(() => {
-    if (!appState.user) {
-      setAppState((prevState) => ({
-        ...prevState,
-        userData: null,
-      }));
-      return;
-    }
-
-    getUserData(appState.user.uid).then((snapshot) => {
-      const fetchedUserData = snapshot.val()
-        ? Object.values(snapshot.val())[0]
-        : null;
-      const userData = fetchedUserData
-        ? { ...fetchedUserData, isBlocked: fetchedUserData.isBlocked ?? false }
-        : null;
-      setAppState((prevState) => ({
-        ...prevState,
-        userData,
-      }));
-    });
-  }, [appState.user]);
+function AppContent() {
+  const { user, userData, loading } = useContext(AppContext);
 
   const renderDashboard = () => {
     return <DashboardWithLoading />;
   };
 
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return (
-    <BrowserRouter>
-      <ToastContainer newestOnTop />
-      <AppContext.Provider value={{ ...appState, setAppState }}>
-        <div className="flex flex-col justify-between max-w-full">
-          <Header />
-          <div className="container mx-auto min-h-screen min-w-min">
-            <Routes>
-              <Route
-                path={`${BASE}`}
-                element={
-                  appState.user ? (
-                    appState.userData && appState.userData.isBlocked ? (
-                      <Blocked />
-                    ) : (
-                      renderDashboard()
-                    )
-                  ) : (
-                    <HomeWithLoading />
-                  )
-                }
-              />
+    <div className="flex flex-col justify-between max-w-full">
+      <Header />
+      <div className="container mx-auto min-h-screen min-w-min">
+        <Routes>
+          <Route
+            path={`${BASE}`}
+            element={
+              user ? (
+                userData && userData.isBlocked ? (
+                  <Blocked />
+                ) : (
+                  renderDashboard()
+                )
+              ) : (
+                <HomeWithLoading />
+              )
+            }
+          />
               <Route path={`${BASE}login`} element={<LoginWithLoading />} />
               <Route
                 path={`${BASE}register`}
@@ -211,8 +185,6 @@ function App() {
           </div>
           <Footer />
         </div>
-      </AppContext.Provider>
-    </BrowserRouter>
   );
 }
 

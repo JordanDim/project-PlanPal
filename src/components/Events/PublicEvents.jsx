@@ -19,7 +19,7 @@ export default function PublicEvents() {
   const {
     userData,
     loading: userLoading,
-    setAppState,
+    setUserData,
   } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -55,7 +55,7 @@ export default function PublicEvents() {
           [eventTitle]: true,
         },
       };
-      setAppState(updatedUserData);
+      setUserData(updatedUserData);
       navigate(`${BASE}my-events`);
     }
   };
@@ -67,7 +67,7 @@ export default function PublicEvents() {
         themeChecker("You have left the event successfully!");
         const updatedGoingToEvents = { ...userData.goingToEvents };
         updatedGoingToEvents[eventTitle] = false;
-        setAppState({
+        setUserData({
           ...userData,
           goingToEvents: updatedGoingToEvents,
         });

@@ -45,7 +45,7 @@ export default function CreateEvent() {
   const [contacts, setContacts] = useState([]);
   const [contactLists, setContactLists] = useState([]);
   const [invitedUsers, setInvitedUsers] = useState([]);
-  const { userData, setAppState } = useContext(AppContext);
+  const { userData, setUserData } = useContext(AppContext);
   const navigate = useNavigate();
   const inviteRef = useRef(null);
   const inviteListRef = useRef(null);
@@ -195,7 +195,7 @@ export default function CreateEvent() {
           [event.title]: true,
         },
       };
-      setAppState(updatedUserData);
+      setUserData(updatedUserData);
 
       setEvent({
         title: "",

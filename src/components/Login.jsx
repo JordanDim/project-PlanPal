@@ -7,7 +7,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"; // Import
 import { BASE } from "../common/constants";
 
 export default function Login() {
-  const { user, setAppState } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -35,7 +35,6 @@ export default function Login() {
     if (response.error) {
       setError(response.error);
     } else {
-      setAppState({ user: response.user, userData: null });
       navigate(location.state?.from.pathname || `${BASE}`);
     }
   };

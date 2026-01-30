@@ -17,7 +17,7 @@ import showConfirmDialog from "../ConfirmDialog.jsx";
 
 export default function SingleEventView() {
   const { eventId } = useParams();
-  const { setAppState } = useContext(AppContext);
+  const { setUserData } = useContext(AppContext);
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -86,7 +86,7 @@ export default function SingleEventView() {
           [eventTitle]: true,
         },
       };
-      setAppState(updatedUserData);
+      setUserData(updatedUserData);
       navigate(`${BASE}my-events`);
     }
   };
@@ -98,7 +98,7 @@ export default function SingleEventView() {
         themeChecker("You have left the event successfully!");
         const updatedGoingToEvents = { ...userData.goingToEvents };
         updatedGoingToEvents[eventTitle] = false;
-        setAppState({
+        setUserData({
           ...userData,
           goingToEvents: updatedGoingToEvents,
         });

@@ -11,7 +11,7 @@ import AdminPanelDropdown from "./AdminPanel/AdminPanel";
 import showConfirmDialog from "./ConfirmDialog";
 
 export default function Header() {
-  const { user, userData, setAppState } = useContext(AppContext);
+  const { user, userData } = useContext(AppContext);
   const [theme, setTheme] = useState(
     localStorage.getItem("theme") ? localStorage.getItem("theme") : LIGHT_THEME
   );
@@ -28,7 +28,6 @@ export default function Header() {
   const logout = async () => {
     showConfirmDialog("Leaving us so quickly?", async () => {
       await logoutUser();
-      setAppState({ user: null, userData: null });
       navigate(`${BASE}`);
     });
   };

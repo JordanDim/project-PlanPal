@@ -19,7 +19,7 @@ export default function PrivateEvents() {
   const {
     userData,
     loading: userLoading,
-    setAppState,
+    setUserData,
   } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -57,7 +57,7 @@ export default function PrivateEvents() {
           [eventTitle]: true,
         },
       };
-      setAppState(updatedUserData);
+      setUserData(updatedUserData);
       navigate(`${BASE}my-events`);
     }
   };
@@ -69,7 +69,7 @@ export default function PrivateEvents() {
         themeChecker("You have left the event successfully!");
         const updatedGoingToEvents = { ...userData.goingToEvents };
         updatedGoingToEvents[eventTitle] = false;
-        setAppState({
+        setUserData({
           ...userData,
           goingToEvents: updatedGoingToEvents,
         });

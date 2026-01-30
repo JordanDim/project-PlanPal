@@ -23,7 +23,7 @@ export default function Register() {
     userName: "",
   });
   const [errors, setErrors] = useState({});
-  const { user, setAppState } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -74,7 +74,6 @@ export default function Register() {
 
       try {
         await createUserHandle(userData);
-        setAppState({ user: credential.user, userData });
         navigate(`${BASE}`);
       } catch (error) {
         console.error("Error creating user handle:", error);
