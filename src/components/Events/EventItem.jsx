@@ -8,7 +8,7 @@ import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
 import showConfirmDialog from "../ConfirmDialog.jsx";
 
 const EventItem = ({ event }) => {
-  const { user, userData } = useContext(AppContext);
+  const { user, userData, setUserData } = useContext(AppContext);
   const [isGoing, setIsGoing] = useState(
     userData?.goingToEvents?.[event.title] || false
   );
@@ -24,6 +24,14 @@ const EventItem = ({ event }) => {
     if (result) {
       themeChecker("You have joined the event successfully!");
 
+      const updatedUserData = {
+        ...userData,
+        goingToEvents: {
+          ...userData.goingToEvents,
+          [event.title]: true,
+        },
+      };
+      setUserData(updatedUserData);
       setIsGoing(true);
     }
   };
@@ -39,18 +47,24 @@ const EventItem = ({ event }) => {
       if (result) {
         themeChecker("You have left the event successfully!");
 
+        const updatedGoingToEvents = { ...userData.goingToEvents };
+        updatedGoingToEvents[event.title] = false;
+        setUserData({
+          ...userData,
+          goingToEvents: updatedGoingToEvents,
+        });
         setIsGoing(false);
       }
     });
   };
 
   return (
-    <li className="event-card shadow-xl transform transition-transform hover:scale-105 mt-4 flex flex-row items-center p-4 space-x-4 rounded-lg ">
+    <li className="event-card backdrop-blur-lg bg-white/10 transform transition-transform hover:scale-105 mt-4 flex flex-row items-center p-4 space-x-4 rounded-[30px]" style={{ boxShadow: '0 0 30px 0 rgba(0, 0, 0, 0.2)' }}>
       <figure className="w-96 h-64">
         <img
           src={event.cover || EVENT_COVER_BY_DEFAULT}
           alt="Event"
-          className="event-cover rounded-xl w-full h-full object-cover "
+          className="event-cover rounded-[30px] w-full h-full object-cover"
         />
       </figure>
       <div className="card-body w-2/3 flex flex-col space-y-2 ">

@@ -118,7 +118,7 @@ export default function SingleEventView() {
   if (!event) return <div className="text-center mt-10">No event found.</div>;
 
   return (
-    <div className="single-event-container p-4 max-w-5xl mx-auto rounded-lg mt-8 mb-8">
+    <div className="single-event-container p-4 max-w-5xl mx-auto rounded-[30px] mt-8 mb-8" style={{ boxShadow: '0 0 30px 0 rgba(0, 0, 0, 0.2)' }}>
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">{event.title}</h1>
         <div className="flex items-center space-x-2">
@@ -154,7 +154,7 @@ export default function SingleEventView() {
           <img
             src={event.cover || EVENT_COVER_BY_DEFAULT}
             alt="Event"
-            className="rounded-xl max-w-xl h-96 object-contain  "
+            className="rounded-[30px] max-w-xl h-96 object-contain"
           />
         </div>
         <div className="flex-grow ml-2">

@@ -1,3 +1,8 @@
+.events-container {
+  width: 1450px;
+  margin: 0 auto;
+}
+
 .dropdown-menu-up {
   position: absolute;
   bottom: 100%;
