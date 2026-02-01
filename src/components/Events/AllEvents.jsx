@@ -105,12 +105,18 @@ export default function AllEvents() {
       </div>
       <div className="flex justify-between mb-8">
         <div className="flex space-x-4">
-          <button onClick={() => navigate(`${BASE}create-event`)}>
-            <button className="btn btn-primary">Create Event</button>
+          <button
+            className="btn btn-primary"
+            onClick={() => navigate(`${BASE}create-event`)}
+          >
+            Create Event
           </button>
 
-          <button onClick={() => navigate(`${BASE}my-events`)}>
-            <button className="btn">My Events</button>
+          <button
+            className="btn"
+            onClick={() => navigate(`${BASE}my-events`)}
+          >
+            My Events
           </button>
 
           <button
