@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getUserByHandle, updateUser } from "../../services/users.service";
 import { uploadAvatar } from "../../services/upload.service";
 import { validateRegister } from "../../common/helpers/validationHelpers";
@@ -7,6 +7,7 @@ import UploadButton from "../UploadButton";
 
 function Profile() {
   const { handle } = useParams();
+  const navigate = useNavigate();
   const [userData, setUserData] = useState({
     firstName: "",
     lastName: "",
@@ -265,10 +266,10 @@ function Profile() {
               </>
             )}
           </div>
-          <div className="mt-4 flex justify-end">
+          <div className="mt-4 flex justify-end gap-2">
             {isEditing ? (
               <>
-                <button onClick={handleSave} className="btn btn-primary mr-2">
+                <button onClick={handleSave} className="btn btn-primary">
                   Save
                 </button>
                 <button onClick={handleCancel} className="btn btn-secondary">
@@ -276,12 +277,17 @@ function Profile() {
                 </button>
               </>
             ) : (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="btn btn-primary"
-              >
-                Edit
-              </button>
+              <>
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="btn btn-primary"
+                >
+                  Edit
+                </button>
+                <button onClick={() => navigate(-1)} className="btn btn-secondary">
+                  Close
+                </button>
+              </>
             )}
           </div>
         </div>
