@@ -149,6 +149,13 @@ export default function UpdateEvent() {
       const result = await inviteUser(eventId, userData.handle, userHandle);
       if (result) {
         themeChecker(`${userHandle} was successfully invited.`);
+        setEvent({
+          ...event,
+          peopleGoing: {
+            ...event.peopleGoing,
+            [userHandle]: true,
+          },
+        });
         if (inviteRef.current) {
           inviteRef.current.open = false;
         }
@@ -166,6 +173,12 @@ export default function UpdateEvent() {
       const result = await uninviteUser(eventId, userHandle);
       if (result) {
         themeChecker(`${userHandle} was successfully kicked out.`);
+        const updatedPeopleGoing = { ...event.peopleGoing };
+        delete updatedPeopleGoing[userHandle];
+        setEvent({
+          ...event,
+          peopleGoing: updatedPeopleGoing,
+        });
         if (uninviteRef.current) {
           uninviteRef.current.open = false;
         }
@@ -221,17 +234,19 @@ export default function UpdateEvent() {
               style={{ zIndex: 999, minWidth: '200px' }}
             >
               <ul className="space-y-2 overflow-x-hidden">
-                {contacts.length === 0 ? (
-                  <li className="p-2">No contacts found.</li>
+                {contacts.filter((contact) => !event.peopleGoing || !event.peopleGoing[contact]).length === 0 ? (
+                  <li className="p-2">No contacts to invite.</li>
                 ) : (
-                  contacts.map((contact) => (
-                    <li
-                      key={contact}
-                      className="p-2 hover:bg-gray-200 cursor-pointer"
-                    >
-                      <a onClick={() => handleInviteUser(contact)}>{contact}</a>
-                    </li>
-                  ))
+                  contacts
+                    .filter((contact) => !event.peopleGoing || !event.peopleGoing[contact])
+                    .map((contact) => (
+                      <li
+                        key={contact}
+                        className="p-2 hover:bg-gray-200 cursor-pointer"
+                      >
+                        <a onClick={() => handleInviteUser(contact)}>{contact}</a>
+                      </li>
+                    ))
                 )}
               </ul>
             </div>
