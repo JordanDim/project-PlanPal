@@ -208,7 +208,7 @@ export default function UpdateEvent() {
   if (!event) return <div className="text-center mt-10">No event found.</div>;
 
   return (
-    <div className="update-event-form p-4 max-w-3xl mx-auto rounded-lg mt-8 mb-8">
+    <div className="single-event-container p-4 max-w-5xl mx-auto rounded-[30px] mt-8 mb-8" style={{ boxShadow: '0 0 30px 0 rgba(0, 0, 0, 0.2)' }}>
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Update Event</h1>
         <div className="flex items-center space-x-2">
@@ -217,10 +217,10 @@ export default function UpdateEvent() {
               Invite
             </summary>
             <div
-              className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black hover:glass"
-              style={{ zIndex: 999 }}
+              className="dropdown-menu absolute max-h-96 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black hover:glass"
+              style={{ zIndex: 999, minWidth: '200px' }}
             >
-              <ul className="space-y-2">
+              <ul className="space-y-2 overflow-x-hidden">
                 {contacts.length === 0 ? (
                   <li className="p-2">No contacts found.</li>
                 ) : (
@@ -241,10 +241,10 @@ export default function UpdateEvent() {
               Uninvite
             </summary>
             <div
-              className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black hover:glass"
-              style={{ zIndex: 999 }}
+              className="dropdown-menu absolute max-h-96 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black hover:glass"
+              style={{ zIndex: 999, minWidth: '200px' }}
             >
-              <ul className="space-y-2">
+              <ul className="space-y-2 overflow-x-hidden">
                 {Object.keys(event.peopleGoing || {}).filter(
                   (handle) => handle !== event.creator
                 ).length === 0 ? (
