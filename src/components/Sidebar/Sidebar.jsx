@@ -7,7 +7,7 @@ export default function SideBar() {
 
   const handleNavigation = (path) => {
     navigate(path);
-    document.getElementById("my-drawer").checked = false; // Close the drawer
+    document.getElementById("my-drawer").checked = false;
   };
 
   return (
@@ -37,7 +37,7 @@ export default function SideBar() {
           <li>
             <button
               onClick={() => handleNavigation(`${BASE}calendar`)}
-              className="btn flex justify-start"
+              className="btn flex justify-center"
             >
               Calendar
             </button>
@@ -45,7 +45,7 @@ export default function SideBar() {
           <li>
             <button
               onClick={() => handleNavigation(`${BASE}events`)}
-              className="btn flex justify-start"
+              className="btn flex justify-center"
             >
               Events
             </button>
@@ -53,7 +53,7 @@ export default function SideBar() {
           <li>
             <button
               onClick={() => handleNavigation(`${BASE}contacts`)}
-              className="btn flex justify-start"
+              className="btn flex justify-center"
             >
               Contacts
             </button>
@@ -61,7 +61,7 @@ export default function SideBar() {
           <li>
             <button
               onClick={() => handleNavigation(`${BASE}about`)}
-              className="btn flex justify-start"
+              className="btn flex justify-center"
             >
               About us
             </button>
