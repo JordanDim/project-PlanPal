@@ -170,12 +170,13 @@ export default function SingleEventView() {
             </details>
           </div>
           {userData.goingToEvents && userData.goingToEvents[event.title] ? (
-            <button className="btn" onClick={() => handleLeaveEvent(event.title)}>
+            <button className="btn" style={{ marginRight: '32px' }} onClick={() => handleLeaveEvent(event.title)}>
               Leave Event
             </button>
           ) : (
             <button
               className="btn btn-primary"
+              style={{ marginRight: '32px' }}
               onClick={() => handleJoinEvent(event.id, event.title)}
             >
               Join Event
@@ -205,15 +206,15 @@ export default function SingleEventView() {
       <div className="mb-4">
         <span className="font-semibold">Category:</span> {event.category}
       </div>
-      <div className="mb-4 flex">
-        <div className="mr-2 flex justify-start">
+      <div className="mb-4 flex gap-4">
+        <div className="w-3/5">
           <img
             src={event.cover || EVENT_COVER_BY_DEFAULT}
             alt="Event"
-            className="rounded-[30px] max-w-xl aspect-video object-cover"
+            className="rounded-[30px] w-full h-96 object-cover"
           />
         </div>
-        <div className="flex-grow ml-2">
+        <div className="w-2/5">
           <Map address={event.location} className="w-full h-96" />
         </div>
       </div>
