@@ -117,11 +117,16 @@ export const validateDescription = (description) => {
   return false;
 };
 
-export const validateStartDate = (startDate) => {
+export const validateStartDate = (startDate, startTime) => {
   if (!startDate) {
     return START_DATE_REQUIRED_ERROR;
   }
-  if (new Date(startDate) < new Date()) {
+  if (!startTime) {
+    return START_TIME_REQUIRED_ERROR;
+  }
+  const startDateTime = new Date(`${startDate}T${startTime}`);
+  const now = new Date();
+  if (startDateTime <= now) {
     return START_DATE_PERIOD_ERROR;
   }
   return false;

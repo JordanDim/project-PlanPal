@@ -219,9 +219,9 @@ export default function CreateEvent() {
   };
 
   return (
-    <div className="create-event-form p-4 max-w-3xl mx-auto rounded-lg mt-8 mb-8">
+    <div className="single-event-container p-8 max-w-5xl mx-auto rounded-[30px] mt-8 mb-8" style={{ boxShadow: '0 0 30px 0 rgba(0, 0, 0, 0.2)' }}>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Create Event</h1>
+        <h1 className="text-3xl font-bold">Create Event</h1>
         <GoBackArrow onClick={() => navigate(`${BASE}events`)} />
       </div>
 
@@ -277,10 +277,7 @@ export default function CreateEvent() {
           />
         )}
       </div>
-      <div className="my-4">
-        <Map address={event.location} />
-      </div>
-      <div className="flex items-center gap-1.9">
+      <div className="flex items-center gap-1.9 my-4">
         <Button className="font-bold py-2 px-4 rounded" onClick={createEvent}>
           Create
         </Button>
@@ -296,14 +293,14 @@ export default function CreateEvent() {
           ref={inviteRef}
           style={{ position: "relative" }}
         >
-          <summary className="font-bold py-2 px-4 cursor-pointer btn btn-secondary">
-            ▼Invite Contact
+          <summary className="m-1 font-bold py-2 px-4 cursor-pointer btn btn-secondary">
+            Invite Contact
           </summary>
           <div
-            className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black hover:glass"
+            className="dropdown-menu absolute w-48 max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black"
             style={{ zIndex: 999 }}
           >
-            <ul className="space-y-2">
+            <ul className="space-y-2 overflow-x-hidden">
               {contacts.length === 0 ? (
                 <li className="p-2">No contacts found.</li>
               ) : (
@@ -321,14 +318,14 @@ export default function CreateEvent() {
         </details>
 
         <details className="dropdown" ref={inviteListRef}>
-          <summary className="font-bold py-2 px-4 cursor-pointer btn btn-secondary">
-            ▼Invite Group
+          <summary className="m-1 font-bold py-2 px-4 cursor-pointer btn btn-secondary">
+            Invite Group
           </summary>
           <div
-            className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black hover:glass"
+            className="dropdown-menu absolute w-48 max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black"
             style={{ zIndex: 999 }}
           >
-            <ul className="space-y-2">
+            <ul className="space-y-2 overflow-x-hidden">
               {contactLists.length === 0 ? (
                 <li className="p-2">No contact lists found.</li>
               ) : (
@@ -353,6 +350,9 @@ export default function CreateEvent() {
           accept="image/*"
           onChange={handleFileChange}
         />
+      </div>
+      <div className="my-4">
+        <Map address={event.location} />
       </div>
     </div>
   );

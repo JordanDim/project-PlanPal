@@ -24,9 +24,9 @@ export const useEventFormValidation = (event) => {
       title: validateTitle(title),
       description: validateDescription(description),
       location: validateLocation(location),
-      startDate: validateStartDate(startDate),
+      startDate: validateStartDate(startDate, startTime),
       startTime: validateStartTime(startTime),
-      endDate: validateEndDate(endDate, startDate),
+      endDate: validateEndDate(endDate, startDate, endTime, startTime),
       endTime: validateEndTime(endTime),
     };
 
