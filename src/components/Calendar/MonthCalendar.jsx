@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import RecurringEvents from "../Events/RecurringEvents";
 import {
   add,
   eachDayOfInterval,
@@ -22,6 +21,7 @@ import {
   faFilm,
   faEllipsisH,
 } from "@fortawesome/free-solid-svg-icons";
+import { getCategoryColor, getEventsForDaySimple, CalendarHeader, CalendarContainer } from "../../utils/calendarUtils.jsx";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -53,17 +53,7 @@ export default function MonthCalendar({ onDateClick, events }) {
   };
 
   const getEventsForDay = (day) => {
-    const recurringEventsForSelectedDay = RecurringEvents({ events, selectedDate: day });
-    const eventsForSelectedDay = events.filter((event) =>
-      isEqual(startOfDay(parse(event.startDate, "yyyy-MM-dd", new Date())), startOfDay(day))
-    );
-
-    const allEventsForSelectedDay = [
-      ...eventsForSelectedDay,
-      ...recurringEventsForSelectedDay,
-    ];
-
-    return allEventsForSelectedDay;
+    return getEventsForDaySimple(events, day);
   };
 
   const getEventIcon = (category) => {
@@ -73,15 +63,6 @@ export default function MonthCalendar({ onDateClick, events }) {
       Entertainment: faFilm,
     };
     return iconMap[category] || faEllipsisH;
-  };
-
-  const getCategoryColor = (category) => {
-    const colorMap = {
-      Sports: "rgba(0, 128, 0, 0.4)",
-      "Culture & Science": "rgba(0, 0, 255, 0.4)",
-      Entertainment: "rgba(255, 255, 0, 0.4)",
-    };
-    return colorMap[category] || "rgba(128, 128, 128, 0.4)";
   };
 
   const days = eachDayOfInterval({
@@ -95,103 +76,59 @@ export default function MonthCalendar({ onDateClick, events }) {
   ));
 
   return (
-    <div className="pt-16" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
-      <div className="max-w-full h-full px-2 sm:px-4 mx-auto">
-        <div className="flex items-center justify-between mb-4">
-          <button
-            type="button"
-            onClick={previousMonth}
-            className="flex items-center justify-center p-2 text-400 hover:text-500"
+    <CalendarContainer>
+      <CalendarHeader
+        title={format(firstDayCurrentMonth, "MMMM yyyy")}
+        onPrevious={previousMonth}
+        onNext={nextMonth}
+        previousLabel="Previous month"
+        nextLabel="Next month"
+      />
+      <div className="grid grid-cols-7 gap-2 text-center">
+        {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => (
+          <div key={index} className="text-xl font-semibold">
+            {day}
+          </div>
+        ))}
+        {blankDays}
+        {days.map((day, dayIdx) => (
+          <div
+            key={day.toString()}
+            className={classNames(
+              dayIdx === 0 && colStartClasses[getDay(day)],
+              "py-1.5 relative h-auto"
+            )}
           >
-            <span className="sr-only">Previous month</span>
-            <svg
-              className="w-5 h-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-          <h2 className="text-lg font-semibold">
-            {format(firstDayCurrentMonth, "MMMM yyyy")}
-          </h2>
-          <button
-            type="button"
-            onClick={nextMonth}
-            className="flex items-center justify-center p-2 text-400 hover:text-500"
-          >
-            <span className="sr-only">Next month</span>
-            <svg
-              className="w-5 h-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-        </div>
-        <div className="grid grid-cols-7 gap-2 text-center">
-          {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => (
-            <div key={index} className="text-xl font-semibold">
-              {day}
-            </div>
-          ))}
-          {blankDays}
-          {days.map((day, dayIdx) => (
-            <div
-              key={day.toString()}
+            <button
+              type="button"
               className={classNames(
-                dayIdx === 0 && colStartClasses[getDay(day)],
-                "py-1.5 relative h-auto"
+                isEqual(day, selectedDay) && "text-red-500 font-semibold",
+                !isEqual(day, selectedDay) && isToday(day) && "text-red-500 font-semibold",
+                !isEqual(day, selectedDay) && !isToday(day) && isSameMonth(day, firstDayCurrentMonth) && "text-900",
+                !isEqual(day, selectedDay) && !isToday(day) && !isSameMonth(day, firstDayCurrentMonth) && "text-400",
+                "mx-auto flex flex-col items-center justify-start w-full h-full"
               )}
+              onClick={() => handleDayClick(day)}
             >
-              <button
-                type="button"
-                className={classNames(
-                  isEqual(day, selectedDay) && "text-red-500 font-semibold",
-                  !isEqual(day, selectedDay) && isToday(day) && "text-red-500 font-semibold",
-                  !isEqual(day, selectedDay) && !isToday(day) && isSameMonth(day, firstDayCurrentMonth) && "text-900",
-                  !isEqual(day, selectedDay) && !isToday(day) && !isSameMonth(day, firstDayCurrentMonth) && "text-400",
-                  "mx-auto flex flex-col items-center justify-start w-full h-full"
-                )}
-                onClick={() => handleDayClick(day)}
-              >
-                <time dateTime={format(day, "yyyy-MM-dd")} className="flex items-center justify-center w-full mb-1">
-                  {format(day, "d")}
-                </time>
-                <div className="w-full border-t mb-1 pb-4"></div>
-                <div className="flex justify-center items-center">
-                  {getEventsForDay(day).map((event, index) => (
-                    <FontAwesomeIcon
-                      key={index}
-                      icon={getEventIcon(event.category)}
-                      style={{ color: getCategoryColor(event.category) }}
-                      className="text-lg mx-1"
-                    />
-                  ))}
-                </div>
-              </button>
-            </div>
-          ))}
-        </div>
+              <time dateTime={format(day, "yyyy-MM-dd")} className="flex items-center justify-center w-full mb-1">
+                {format(day, "d")}
+              </time>
+              <div className="w-full border-t mb-1 pb-4"></div>
+              <div className="flex justify-center items-center">
+                {getEventsForDay(day).map((event, index) => (
+                  <FontAwesomeIcon
+                    key={index}
+                    icon={getEventIcon(event.category)}
+                    style={{ color: getCategoryColor(event.category, false, 'rgba') }}
+                    className="text-lg mx-1"
+                  />
+                ))}
+              </div>
+            </button>
+          </div>
+        ))}
       </div>
-    </div>
+    </CalendarContainer>
   );
 }
 

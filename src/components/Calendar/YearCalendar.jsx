@@ -10,7 +10,7 @@ import {
   sub,
   startOfToday,
 } from "date-fns";
-import RecurringEvents from "../Events/RecurringEvents";
+import { getEventsForDaySimple, CalendarHeader, CalendarContainer } from "../../utils/calendarUtils.jsx";
 
 export default function YearCalendar({ onDateClick, events }) {
   const today = startOfToday();
@@ -26,16 +26,8 @@ export default function YearCalendar({ onDateClick, events }) {
       { length: daysInMonth + firstDayOfWeek },
       (_, i) => {
         const day = add(startOfMonth(monthStart), { days: i - firstDayOfWeek });
-        const eventsForDay = events.filter(
-          (event) =>
-            format(event.startDate, "yyyy-MM-dd") === format(day, "yyyy-MM-dd")
-        );
-        const recurringEventsForDay = RecurringEvents({
-          events,
-          selectedDate: day,
-        });
-        const hasEvents =
-          eventsForDay.length > 0 || recurringEventsForDay.length > 0;
+        const eventsForDay = getEventsForDaySimple(events, day);
+        const hasEvents = eventsForDay.length > 0;
 
         if (hasEvents) {
           return (
@@ -109,60 +101,18 @@ export default function YearCalendar({ onDateClick, events }) {
   }
 
   return (
-    <div className="pt-16" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
-        <div className="max-w-full h-full px-2 sm:px-4 mx-auto">
-            <div className="flex items-center justify-between mb-8">
-                <button
-                    type="button"
-                    onClick={previousYear}
-                    className="flex items-center justify-center p-2 text-400 hover:text-500"
-                >
-                    <span className="sr-only">Previous year</span>
-                    <svg
-                        className="w-5 h-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M15 19l-7-7 7-7"
-                        />
-                    </svg>
-                </button>
-                <h2 className="text-lg font-semibold">{currentYear}</h2>
-                <button
-                    type="button"
-                    onClick={nextYear}
-                    className="flex items-center justify-center p-2 text-400 hover:text-500"
-                >
-                    <span className="sr-only">Next year</span>
-                    <svg
-                        className="w-5 h-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 5l7 7-7 7"
-                        />
-                    </svg>
-                </button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                {months}
-            </div>
-        </div>
-    </div>
+    <CalendarContainer>
+      <CalendarHeader
+        title={currentYear}
+        onPrevious={previousYear}
+        onNext={nextYear}
+        previousLabel="Previous year"
+        nextLabel="Next year"
+      />
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {months}
+      </div>
+    </CalendarContainer>
 );
 
 }
