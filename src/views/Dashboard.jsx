@@ -47,7 +47,7 @@ function Dashboard() {
           </div>
         </div>
         <div className="pt-20 flex flex-col h-full">
-          <div className="flex-grow" style={{ maxHeight: "110vh", overflowY: "auto" }}>
+          <div className="flex-grow p-2" style={{ maxHeight: "110vh", overflowY: "auto" }}>
             <DayCalendar
               events={events}
               selectedDate={selectedDate}
