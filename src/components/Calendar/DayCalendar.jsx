@@ -38,6 +38,40 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
 
   const allEventsForSelectedDay = getEventsForDay(events, selectedDate);
 
+  function calculateEventLayout(events) {
+    const parsedEvents = events.map(event => ({
+      ...event,
+      start: parseISO(`${event.startDate}T${event.startTime}`),
+      end: parseISO(`${event.endDate}T${event.endTime}`)
+    }));
+
+    return parsedEvents.map((event, i) => {
+      const overlappingEvents = parsedEvents.filter((other, j) => {
+        if (i === j) return false;
+        return event.start < other.end && other.start < event.end;
+      });
+
+      const numOverlapping = overlappingEvents.length + 1;
+
+      const overlapGroup = [...overlappingEvents, event].sort((a, b) => {
+        if (a.start.getTime() !== b.start.getTime()) {
+          return a.start - b.start;
+        }
+        return events.indexOf(a) - events.indexOf(b);
+      });
+
+      const position = overlapGroup.findIndex(e => e.id === event.id);
+
+      return {
+        ...event,
+        column: position,
+        totalColumns: numOverlapping
+      };
+    });
+  }
+
+  const eventsWithLayout = calculateEventLayout(allEventsForSelectedDay);
+
   return (
     <CalendarContainer>
       <CalendarHeader
@@ -59,7 +93,7 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
               </div>
             </div>
           ))}
-          {allEventsForSelectedDay.map((event, index) => {
+          {eventsWithLayout.map((event, index) => {
             const eventStart = parseISO(
               `${event.startDate}T${event.startTime}`
             );
@@ -84,11 +118,8 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
             const eventHeight =
               (eventEndHour + eventEndMinute / 60) * 3 - startTop;
 
-            const HOUR_LABELS_WIDTH_REM = 5; 
-            const numEvents = allEventsForSelectedDay.length;
-
-            const eventWidth = 100 / numEvents;
-            const eventLeftPercent = index * eventWidth;
+            const HOUR_LABELS_WIDTH_REM = 5;
+            const { column, totalColumns } = event;
 
             const categoryColor = getCategoryColor(event.category, isPast);
 
@@ -99,8 +130,8 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
                 style={{
                   top: `${startTop}rem`,
                   height: `${eventHeight}rem`,
-                  width: `calc((100% - ${HOUR_LABELS_WIDTH_REM}rem) / ${numEvents} - 0.5rem)`,
-                  left: `calc(${HOUR_LABELS_WIDTH_REM}rem + ${index} * ((100% - ${HOUR_LABELS_WIDTH_REM}rem) / ${numEvents}))`,
+                  width: `calc((100% - ${HOUR_LABELS_WIDTH_REM}rem) / ${totalColumns} - 0.5rem)`,
+                  left: `calc(${HOUR_LABELS_WIDTH_REM}rem + ${column} * ((100% - ${HOUR_LABELS_WIDTH_REM}rem) / ${totalColumns}))`,
                   opacity: isPast ? 0.5 : 1,
                 }}
                 onClick={() => navigate(`${BASE}events/${event.id}`)}
@@ -115,7 +146,7 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
             );
           })}
           {isToday && (
-            <CurrentTimeIndicator topPosition={getCurrentTimePosition(currentTime)} leftOffset="8rem" />
+            <CurrentTimeIndicator topPosition={getCurrentTimePosition(currentTime)} leftOffset="5rem" />
           )}
         </div>
       </div>

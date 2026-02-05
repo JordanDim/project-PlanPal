@@ -76,9 +76,15 @@ export function getEventsForDay(events, selectedDate) {
 export function getEventsForDaySimple(events, selectedDate) {
   const recurringEventsForSelectedDay = RecurringEvents({ events, selectedDate });
 
-  const eventsForSelectedDay = events.filter((event) =>
-    isSameDay(parseISO(event.startDate), selectedDate)
-  );
+  const eventsForSelectedDay = events.filter((event) => {
+    const eventStart = parseISO(`${event.startDate}T${event.startTime}`);
+    const eventEnd = parseISO(`${event.endDate}T${event.endTime}`);
+    return (
+      isSameDay(eventStart, selectedDate) ||
+      isSameDay(eventEnd, selectedDate) ||
+      (eventStart < startOfDayFn(selectedDate) && eventEnd > endOfDay(selectedDate))
+    );
+  });
 
   return [...eventsForSelectedDay, ...recurringEventsForSelectedDay];
 }
