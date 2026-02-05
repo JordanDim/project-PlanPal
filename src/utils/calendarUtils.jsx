@@ -155,10 +155,10 @@ CalendarHeader.propTypes = {
 /**
  * Current time indicator component (red line)
  */
-export function CurrentTimeIndicator({ topPosition, leftOffset = "4rem" }) {
+export function CurrentTimeIndicator({ topPosition, leftOffset = "0rem" }) {
   return (
     <div
-      className="absolute left-16 right-2 w-full border-t-2 border-red-500"
+      className="absolute left-0 right-0 w-full border-t-2 border-red-500"
       style={{ top: `${topPosition}rem` }}
     >
       <div className={`absolute -mt-1 w-2 h-2 bg-red-500 rounded-full`} style={{ left: leftOffset }}></div>

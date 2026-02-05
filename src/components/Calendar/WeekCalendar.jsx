@@ -83,14 +83,24 @@ function WeekCalendar({ events = [], onDateClick = () => {}, isInWeekView = fals
         previousLabel="Previous week"
         nextLabel="Next week"
       />
+      <div className={`grid ${isInWeekView ? 'grid-cols-6' : 'grid-cols-8'}`}>
+        <div className="h-12 flex flex-col items-center justify-center border-b py-2">
+          <h3 className="text-sm">Hours</h3>
+        </div>
+        {daysOfWeek
+          .filter((_, index) => !isInWeekView || (index !== 5 && index !== 6))
+          .map((day, dayIndex) => (
+            <div key={dayIndex} className="h-12 flex flex-col items-center justify-center border-b py-2">
+              <h3 className="text-sm">{format(day, "EEE, MMM d")}</h3>
+            </div>
+          ))}
+      </div>
+
       <div className="relative border w-full">
         <div className={`grid ${isInWeekView ? 'grid-cols-6' : 'grid-cols-8'}`}>
-          <div className="border-r w-full">
-            <div className="h-12 flex flex-col items-center justify-center border-b glass py-2">
-              <h3 className="text-sm">Hours</h3>
-            </div>
+          <div className="w-full">
             {hours.map((hour, index) => (
-              <div key={index} className="h-12 flex items-center justify-center border-b">
+              <div key={index} className="h-12 flex items-center justify-center border-b border-r">
                 <div className="w-16 text-right pr-2 text-xs">{format(hour, "HH:mm")}</div>
               </div>
             ))}
@@ -102,13 +112,10 @@ function WeekCalendar({ events = [], onDateClick = () => {}, isInWeekView = fals
               const groupedEvents = groupEvents(dayEvents);
               const maxColumns = groupedEvents.length;
               return (
-                <div key={dayIndex} className="relative border-r w-full cursor-pointer" onClick={() => onDateClick(day)}>
-                  <div className="flex flex-col items-center justify-center border-b glass py-2 h-12">
-                    <h3 className="text-sm">{format(day, "EEE, MMM d")}</h3>
-                  </div>
+                <div key={dayIndex} className="relative w-full cursor-pointer" onClick={() => onDateClick(day)}>
                   <div className="relative">
                     {hours.map((hour, index) => (
-                      <div key={index} className="h-12 border-b"></div>
+                      <div key={index} className="h-12 border-b border-r"></div>
                     ))}
                     {groupedEvents.map((eventsInColumn, columnIndex) =>
                       eventsInColumn.map((event, index) => {
@@ -134,16 +141,17 @@ function WeekCalendar({ events = [], onDateClick = () => {}, isInWeekView = fals
                         return (
                           <div
                             key={index}
-                            className={`absolute text-white text-xs rounded px-1 py-0.5 ${eventColor}`}
+                            className={`absolute text-black text-xs rounded-lg shadow-lg cursor-pointer ${eventColor}`}
                             style={{
                               top: `${startTop}rem`,
                               height: `${eventHeight}rem`,
-                              width: eventWidth,
-                              left: eventLeft,
+                              width: `calc(${eventWidth} - 4px)`,
+                              left: `calc(${eventLeft} + 2px)`,
+                              opacity: isPast ? 0.5 : 1,
                             }}
                           >
                             <div className="px-2 py-1">
-                              <div>{event.title}</div>
+                              <div className="font-semibold">{event.title}</div>
                               <div>{event.startTime} - {event.endTime}</div>
                             </div>
                           </div>
@@ -151,7 +159,7 @@ function WeekCalendar({ events = [], onDateClick = () => {}, isInWeekView = fals
                       })
                     )}
                     {isCurrentWeek && format(currentTime, "yyyy-MM-dd") === format(day, "yyyy-MM-dd") && (
-                      <CurrentTimeIndicator topPosition={getCurrentTimePosition(currentTime)} leftOffset="0.25rem" />
+                      <CurrentTimeIndicator topPosition={getCurrentTimePosition(currentTime)} />
                     )}
                   </div>
                 </div>
