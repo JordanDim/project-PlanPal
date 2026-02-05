@@ -37,8 +37,8 @@ const TopThreeEvents = () => {
 
   return (
     <div className="events-container relative px-4 py-8">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-4xl font-bold">Hot Events</h1>
+      <div className="flex justify-center items-center mb-4">
+        <h1 className="text-4xl font-bold">Check Out Our Hot Events</h1>
       </div>
       <ul>
         {events.map((event) => (

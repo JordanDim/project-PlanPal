@@ -84,24 +84,23 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
             const eventHeight =
               (eventEndHour + eventEndMinute / 60) * 3 - startTop;
 
-            const eventWidth =
-              100 / allEventsForSelectedDay.length - GAP_SIZE;
-            const eventLeft =
-              index * (100 / allEventsForSelectedDay.length + GAP_SIZE);
+            const HOUR_LABELS_PERCENT = 6;
+            const availablePercent = 100 - HOUR_LABELS_PERCENT;
+
+            const eventWidth = availablePercent / allEventsForSelectedDay.length;
+            const eventLeft = HOUR_LABELS_PERCENT + index * eventWidth;
 
             const categoryColor = getCategoryColor(event.category, isPast);
 
             return (
               <div
                 key={event.id}
-                className={`absolute pl-16 pr-4 text-black text-xs rounded-lg shadow-lg cursor-pointer ${categoryColor}`}
+                className={`absolute pr-4 text-black text-xs rounded-lg shadow-lg cursor-pointer ${categoryColor}`}
                 style={{
                   top: `${startTop}rem`,
                   height: `${eventHeight}rem`,
-                  width: `calc(${eventWidth}% - ${GAP_SIZE}rem)`,
+                  width: `calc(${eventWidth}% - 0.5rem)`,
                   left: `${eventLeft}%`,
-                  marginLeft: `${GAP_SIZE / 2}rem`,
-                  marginRight: `${GAP_SIZE / 2}rem`,
                   opacity: isPast ? 0.5 : 1,
                 }}
                 onClick={() => navigate(`${BASE}events/${event.id}`)}
@@ -116,7 +115,7 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
             );
           })}
           {isToday && (
-            <CurrentTimeIndicator topPosition={getCurrentTimePosition(currentTime)} leftOffset="4rem" />
+            <CurrentTimeIndicator topPosition={getCurrentTimePosition(currentTime)} leftOffset="8rem" />
           )}
         </div>
       </div>
