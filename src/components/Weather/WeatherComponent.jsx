@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 const WeatherComponent = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchWeatherData = async (latitude, longitude) => {
@@ -16,7 +15,11 @@ const WeatherComponent = () => {
                 setWeatherData(data);
                 setLoading(false);
             } catch (err) {
-                setError(err.message);
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=42.6977&lon=23.3219&appid=af9ab0eda35ad9ffda94525001bd3eab&units=metric`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setWeatherData(data);
+                }
                 setLoading(false);
             }
         };
@@ -29,13 +32,13 @@ const WeatherComponent = () => {
                         fetchWeatherData(latitude, longitude);
                     },
                     (error) => {
-                        setError(error.message);
-                        setLoading(false);
+                        // Sofia
+                        fetchWeatherData(42.6977, 23.3219);
                     }
                 );
             } else {
-                setError('Geolocation is not supported by this browser.');
-                setLoading(false);
+                // Sofia
+                fetchWeatherData(42.6977, 23.3219);
             }
         };
 
@@ -50,10 +53,6 @@ const WeatherComponent = () => {
 
     if (loading) {
         return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>Error: {error}</div>;
     }
 
     return (
