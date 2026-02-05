@@ -9,6 +9,7 @@ import AnimatedButton from "./AnimatedButton/AnimatedButton";
 import HomeButton from "./AnimatedButton/HomeButton";
 import AdminPanelDropdown from "./AdminPanel/AdminPanel";
 import showConfirmDialog from "./ConfirmDialog";
+import CalendarViewDropdown from "./Calendar/CalendarViewDropdown";
 
 export default function Header() {
   const { user, userData } = useContext(AppContext);
@@ -54,6 +55,7 @@ export default function Header() {
       <div className="flex items-center">
         {user ? (
           <>
+            {location.pathname === `${BASE}calendar` && <CalendarViewDropdown />}
             <button className="btn btn-primary" onClick={handleClick}>
               Profile
             </button>
