@@ -84,11 +84,11 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
             const eventHeight =
               (eventEndHour + eventEndMinute / 60) * 3 - startTop;
 
-            const HOUR_LABELS_PERCENT = 6;
-            const availablePercent = 100 - HOUR_LABELS_PERCENT;
+            const HOUR_LABELS_WIDTH_REM = 5; 
+            const numEvents = allEventsForSelectedDay.length;
 
-            const eventWidth = availablePercent / allEventsForSelectedDay.length;
-            const eventLeft = HOUR_LABELS_PERCENT + index * eventWidth;
+            const eventWidth = 100 / numEvents;
+            const eventLeftPercent = index * eventWidth;
 
             const categoryColor = getCategoryColor(event.category, isPast);
 
@@ -99,8 +99,8 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
                 style={{
                   top: `${startTop}rem`,
                   height: `${eventHeight}rem`,
-                  width: `calc(${eventWidth}% - 0.5rem)`,
-                  left: `${eventLeft}%`,
+                  width: `calc((100% - ${HOUR_LABELS_WIDTH_REM}rem) / ${numEvents} - 0.5rem)`,
+                  left: `calc(${HOUR_LABELS_WIDTH_REM}rem + ${index} * ((100% - ${HOUR_LABELS_WIDTH_REM}rem) / ${numEvents}))`,
                   opacity: isPast ? 0.5 : 1,
                 }}
                 onClick={() => navigate(`${BASE}events/${event.id}`)}
