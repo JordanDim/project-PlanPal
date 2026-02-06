@@ -175,7 +175,7 @@ export default function SingleEventView() {
             </button>
           ) : (
             <button
-              className="btn btn-primary btn-sm"
+              className="btn btn-primary"
               onClick={() => handleJoinEvent(event.id, event.title)}
             >
               Join Event
