@@ -118,17 +118,17 @@ export default function SingleEventView() {
   if (!event) return <div className="text-center mt-10">No event found.</div>;
 
   return (
-    <div className="single-event-container p-8 max-w-5xl mx-auto rounded-[30px] mt-8 mb-8" style={{ boxShadow: '0 0 30px 0 rgba(0, 0, 0, 0.2)' }}>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold">{event.title}</h1>
-        <div className="flex items-center space-x-2">
+    <div className="single-event-container p-4 md:p-8 max-w-5xl mx-auto rounded-[30px] mt-4 md:mt-8 mb-4 md:mb-8" style={{ boxShadow: '0 0 30px 0 rgba(0, 0, 0, 0.2)' }}>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold">{event.title}</h1>
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           <div className="relative" ref={participantsRef}>
             <details className="dropdown">
-              <summary className="m-1 font-bold py-2 px-4 cursor-pointer btn btn-secondary">
+              <summary className="m-1 font-bold py-2 px-4 cursor-pointer btn btn-secondary text-sm">
                 Participants
               </summary>
               <div
-                className="dropdown-menu absolute w-48 max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black "
+                className="dropdown-menu absolute right-0 w-48 max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black "
                 style={{ zIndex: 999 }}
               >
                 <ul className="space-y-2 overflow-x-hidden">
@@ -170,13 +170,12 @@ export default function SingleEventView() {
             </details>
           </div>
           {userData.goingToEvents && userData.goingToEvents[event.title] ? (
-            <button className="btn" style={{ marginRight: '32px' }} onClick={() => handleLeaveEvent(event.title)}>
+            <button className="btn" onClick={() => handleLeaveEvent(event.title)}>
               Leave Event
             </button>
           ) : (
             <button
-              className="btn btn-primary"
-              style={{ marginRight: '32px' }}
+              className="btn btn-primary btn-sm"
               onClick={() => handleJoinEvent(event.id, event.title)}
             >
               Join Event
@@ -189,33 +188,33 @@ export default function SingleEventView() {
           )}
         </div>
       </div>
-      <div className="mb-4">
+      <div className="mb-3 md:mb-4">
         <span className="font-semibold">Creator:</span> {event.creator}
       </div>
-      <div className="mb-4">
+      <div className="mb-3 md:mb-4">
         <span className="font-semibold">Start Time:</span> {event.startDate}{" "}
         {event.startTime}
       </div>
-      <div className="mb-4">
+      <div className="mb-3 md:mb-4">
         <span className="font-semibold">End Time:</span> {event.endDate}{" "}
         {event.endTime}
       </div>
-      <div className="mb-4">
+      <div className="mb-3 md:mb-4">
         <span className="font-semibold">Address:</span> {event.location}
       </div>
-      <div className="mb-4">
+      <div className="mb-3 md:mb-4">
         <span className="font-semibold">Category:</span> {event.category}
       </div>
-      <div className="mb-4 flex gap-4">
-        <div className="w-3/5">
+      <div className="mb-4 flex flex-col md:flex-row gap-4">
+        <div className="w-full md:w-3/5">
           <img
             src={event.cover || EVENT_COVER_BY_DEFAULT}
             alt="Event"
-            className="rounded-[30px] w-full h-96 object-cover"
+            className="rounded-[30px] w-full h-64 md:h-96 object-cover"
           />
         </div>
-        <div className="w-2/5">
-          <Map address={event.location} className="w-full h-96" />
+        <div className="w-full md:w-2/5">
+          <Map address={event.location} className="w-full h-64 md:h-96" />
         </div>
       </div>
       <div className="mb-4">
