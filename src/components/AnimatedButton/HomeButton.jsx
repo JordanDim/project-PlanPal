@@ -44,7 +44,7 @@ function HomeButton() {
 
   return (
     <button
-      className="btn btn--ripple btn-primary"
+      className="btn btn--ripple btn-primary mr-0.5"
       id="home-ripple"
       onClick={handleClick}
     >

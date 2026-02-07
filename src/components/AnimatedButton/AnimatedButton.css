@@ -8,13 +8,25 @@
 .btn-container {
   display: flex;
   justify-content: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .btn-container {
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .btn-container {
+    gap: 2rem;
+  }
 }
 
 .btn {
   position: relative;
   display: inline-block;
   padding: 12px 36px;
-  margin: 10px;
   font-size: 1.4rem;
   letter-spacing: 2px;
   border-radius: 5px;

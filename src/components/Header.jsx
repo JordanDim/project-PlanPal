@@ -47,12 +47,12 @@ export default function Header() {
           : ""
       }`}
     >
-      <div className="flex items-center">
+      <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-4">
         {user && <SideBar />}
         <HomeButton />
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-4">
         {user ? (
           <>
             {location.pathname === `${BASE}calendar` && <CalendarViewDropdown />}
@@ -69,7 +69,7 @@ export default function Header() {
             <AnimatedButton />
           </>
         )}
-        <label className="swap swap-rotate ml-2 sm:ml-4">
+        <label className="swap swap-rotate">
           <input
             type="checkbox"
             onChange={handleToggle}

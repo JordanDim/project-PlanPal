@@ -13,7 +13,7 @@ export default function CalendarViewDropdown({ onViewChange }) {
   };
 
   return (
-    <div className={`dropdown ${isDropdownOpen ? "open" : ""} mr-2`}>
+    <div className={`dropdown ${isDropdownOpen ? "open" : ""}`}>
       <div
         tabIndex={0}
         role="button"
