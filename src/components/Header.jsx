@@ -52,15 +52,15 @@ export default function Header() {
         <HomeButton />
       </div>
 
-      <div className="flex items-center">
+      <div className="flex items-center gap-2">
         {user ? (
           <>
             {location.pathname === `${BASE}calendar` && <CalendarViewDropdown />}
-            <button className="btn btn-primary" onClick={handleClick}>
+            <button className="btn btn-primary hidden sm:block" onClick={handleClick}>
               Profile
             </button>
-            {userData?.role === "Admin" && <AdminPanelDropdown />}
-            <button className="btn btn-secondary" onClick={logout}>
+            {userData?.role === "Admin" && <AdminPanelDropdown className="hidden sm:block" />}
+            <button className="btn btn-secondary hidden sm:block" onClick={logout}>
               Logout
             </button>
           </>
@@ -69,7 +69,7 @@ export default function Header() {
             <AnimatedButton />
           </>
         )}
-        <label className="swap swap-rotate ml-4">
+        <label className="swap swap-rotate ml-2 sm:ml-4">
           <input
             type="checkbox"
             onChange={handleToggle}

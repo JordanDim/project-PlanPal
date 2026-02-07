@@ -1,13 +1,26 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Burger, CancelBurger } from "../../common/helpers/icons";
 import { BASE } from "../../common/constants";
+import { AppContext } from "../../context/AppContext";
+import { logoutUser } from "../../services/auth.service";
+import showConfirmDialog from "../ConfirmDialog";
 
 export default function SideBar() {
   const navigate = useNavigate();
+  const { user, userData } = useContext(AppContext);
 
   const handleNavigation = (path) => {
     navigate(path);
     document.getElementById("my-drawer").checked = false;
+  };
+
+  const handleLogout = async () => {
+    showConfirmDialog("Leaving us so quickly?", async () => {
+      await logoutUser();
+      navigate(`${BASE}`);
+      document.getElementById("my-drawer").checked = false;
+    });
   };
 
   return (
@@ -64,6 +77,22 @@ export default function SideBar() {
               className="btn flex justify-center"
             >
               About us
+            </button>
+          </li>
+          <li className="sm:hidden">
+            <button
+              onClick={() => handleNavigation(`${BASE}profile/${userData ? userData.handle : ""}`)}
+              className="btn flex justify-center"
+            >
+              Profile
+            </button>
+          </li>
+          <li className="sm:hidden">
+            <button
+              onClick={handleLogout}
+              className="btn flex justify-center"
+            >
+              Logout
             </button>
           </li>
         </ul>
