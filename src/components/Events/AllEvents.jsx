@@ -100,56 +100,56 @@ export default function AllEvents() {
 
   return (
     <div className="events-container relative px-4 py-8">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-4xl font-bold">All Events</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">All Events</h1>
       </div>
-      <div className="flex justify-between mb-8">
-        <div className="flex space-x-4">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
+        <div className="flex flex-wrap gap-2 sm:gap-4">
           <button
-            className="btn btn-primary"
+            className="btn btn-primary btn-sm sm:btn-md"
             onClick={() => navigate(`${BASE}create-event`)}
           >
             Create Event
           </button>
 
           <button
-            className="btn"
+            className="btn btn-sm sm:btn-md"
             onClick={() => navigate(`${BASE}my-events`)}
           >
             My Events
           </button>
 
           <button
-            className="btn"
+            className="btn btn-sm sm:btn-md"
             onClick={() => navigate(`${BASE}public-events`)}
           >
             Public Events
           </button>
           <button
-            className="btn"
+            className="btn btn-sm sm:btn-md"
             onClick={() => navigate(`${BASE}private-events`)}
           >
             Private Events
           </button>
         </div>
-        <div className="flex space-x-4 items-center">
+        <div className="flex flex-wrap gap-2 sm:gap-4 items-center w-full lg:w-auto">
           {userData.role === "Admin" && (
-            <div className="flex space-x-2 items-center">
+            <div className="flex flex-wrap gap-2 items-center w-full lg:w-auto">
               <input
                 type="text"
                 placeholder="Search events"
-                className="input input-bordered"
+                className="input input-bordered input-sm sm:input-md w-full lg:w-auto"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           )}
           <details
-            className="dropdown"
+            className="dropdown dropdown-end w-full lg:w-auto"
             ref={categoriesRef}
             style={{ position: "relative" }}
           >
-            <summary className="font-bold py-2 px-4 cursor-pointer btn btn-secondary">
+            <summary className="font-bold py-2 px-4 cursor-pointer btn btn-secondary btn-sm sm:btn-md w-full lg:w-auto">
               ▼Categories
             </summary>
             <div

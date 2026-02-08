@@ -59,21 +59,21 @@ const EventItem = ({ event }) => {
   };
 
   return (
-    <li className="event-card backdrop-blur-lg bg-white/10 transform transition-transform hover:scale-105 mt-4 flex flex-row items-center p-4 space-x-4 rounded-[30px]" style={{ boxShadow: '0 0 30px 0 rgba(0, 0, 0, 0.2)' }}>
-      <figure className="w-96 h-64">
+    <li className="event-card backdrop-blur-lg bg-white/10 transform transition-transform hover:scale-105 mt-4 flex flex-col sm:flex-row items-center p-4 space-y-4 sm:space-y-0 sm:space-x-4 rounded-[30px]" style={{ boxShadow: '0 0 30px 0 rgba(0, 0, 0, 0.2)' }}>
+      <figure className="w-full h-80 sm:w-64 sm:h-48 lg:w-80 lg:h-56 flex-shrink-0">
         <img
           src={event.cover || EVENT_COVER_BY_DEFAULT}
           alt="Event"
           className="event-cover rounded-[30px] w-full h-full object-cover"
         />
       </figure>
-      <div className="card-body w-2/3 flex flex-col space-y-2 ">
-        <h2 className="card-title text-xl font-semibold">{event.title}</h2>
+      <div className="card-body w-full flex flex-col space-y-2">
+        <h2 className="card-title text-lg sm:text-xl font-semibold">{event.title}</h2>
         <p className="text-gray-500 break-words whitespace-normal overflow-hidden max-h-24 text-sm">
           {event.description}
         </p>
-        <div className="grid grid-cols-3 gap-4 text-gray-500 text-xs">
-          <p className="col-span-3">Location: {event.location}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 text-gray-500 text-xs">
+          <p className="col-span-full">Location: {event.location}</p>
           <p>
             Start: {event.startDate} {event.startTime}
           </p>
@@ -85,9 +85,9 @@ const EventItem = ({ event }) => {
           <p>Creator: {event.creator}</p>
           <p>Category: {event.category}</p>
         </div>
-        <div className="card-actions flex space-x-2">
+        <div className="card-actions flex flex-wrap gap-2">
           <button
-            className="btn btn-primary"
+            className="btn btn-primary btn-sm sm:btn-md"
             onClick={() =>
               user
                 ? navigate(`${BASE}events/${event.id}`)
@@ -99,12 +99,12 @@ const EventItem = ({ event }) => {
           {user && (
             <>
               {isGoing ? (
-                <button className="btn" onClick={handleLeaveEventDashboard}>
+                <button className="btn btn-sm sm:btn-md" onClick={handleLeaveEventDashboard}>
                   Leave Event
                 </button>
               ) : (
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-secondary btn-sm sm:btn-md"
                   onClick={handleJoinEventDashboard}
                 >
                   Join Event
