@@ -31,11 +31,11 @@ const cardData = [
   {
     profilePic: Yordan,
     description:
-      "I'm an enthusiastic junior developer specializing in JavaScript and React. I enjoy creating dynamic web applications and strive to deliver high-quality solutions.",
+      "I'm an enthusiastic junior developer currently building my expertise in JavaScript and React, dedicated to mastering these essential skills for success.",
     name: "Yordan Dimitrov",
     title: "Junior Frontend Developer",
-    linkedin: "https://www.linkedin.com/",
-    github: "https://github.com/",
+    linkedin: "https://www.linkedin.com/in/yordan-dimitrov-446105315/",
+    github: "https://github.com/JordanDim?tab=repositories",
   },
 ];
 
@@ -45,8 +45,12 @@ const AnimatedCard = () => {
   useGSAP(() => {
     cardsRef.current.forEach((card) => {
       card.addEventListener("mousemove", (event) => {
-        const mouseX = -(window.innerWidth / 2 - event.pageX) / 30;
-        const mouseY = (window.innerHeight / 2 - event.pageY) / 10;
+        const rect = card.getBoundingClientRect();
+        const cardCenterX = rect.left + rect.width / 2 + window.scrollX;
+        const cardCenterY = rect.top + rect.height / 2 + window.scrollY;
+
+        const mouseX = -(cardCenterX - event.pageX) / 30;
+        const mouseY = (cardCenterY - event.pageY) / 30;
 
         gsap.to(card, {
           duration: 0.5,

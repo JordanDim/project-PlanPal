@@ -69,3 +69,73 @@
 .social-icons a:hover {
   color: #4cb0b0;
 }
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .profile-card-container {
+    gap: 50px;
+  }
+}
+
+@media (max-width: 900px) {
+  .profile-card-container {
+    flex-wrap: wrap;
+    gap: 40px;
+    height: auto;
+    padding: 40px 20px;
+  }
+
+  .card {
+    width: 320px;
+  }
+
+  .thumb {
+    height: 130px;
+    width: 130px;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-card-container {
+    gap: 30px;
+    padding: 30px 15px;
+  }
+
+  .card {
+    width: 280px;
+    padding: 15px;
+  }
+
+  .thumb {
+    height: 110px;
+    width: 110px;
+    border-radius: 20%;
+    margin: 15px auto;
+  }
+
+  .description {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+  }
+
+  .text-container {
+    padding: 10px;
+  }
+
+  .text-container h2 {
+    font-size: 1.3em;
+  }
+
+  .text-container span {
+    font-size: 0.9em;
+  }
+
+  .social-icons {
+    margin-top: 15px;
+  }
+
+  .social-icons a {
+    font-size: 1.3rem;
+    margin: 0 8px;
+  }
+}
