@@ -38,8 +38,8 @@ function AnimatedStack() {
             style={{ zIndex: 4 }}
           >
             <div className="card-content">
-              <h1>Plan and Discover</h1>
-              <p>
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-[2em]">Plan and Discover</h1>
+              <p className="text-xs sm:text-sm md:text-base lg:text-[1em]">
                 {" "}
                 Manage your schedule with PlanPal's interactive calendar. Check
                 your events at a glance, explore new opportunities, and stay
@@ -59,8 +59,8 @@ function AnimatedStack() {
             style={{ zIndex: 3 }}
           >
             <div className="card-content">
-              <h1>Organize</h1>
-              <p>
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-[2em]">Organize</h1>
+              <p className="text-xs sm:text-sm md:text-base lg:text-[1em]">
                 {" "}
                 Easily create public or private events with our intuitive
                 interface. Manage your events by adding, removing, or editing
@@ -81,8 +81,8 @@ function AnimatedStack() {
             style={{ zIndex: 2 }}
           >
             <div className="card-content">
-              <h1>Connect and Share</h1>
-              <p>
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-[2em]">Connect and Share</h1>
+              <p className="text-xs sm:text-sm md:text-base lg:text-[1em]">
                 {" "}
                 Effortlessly manage your contacts with PlanPal. Ensure the right
                 people are always informed and collaborate seamlessly. Keep your

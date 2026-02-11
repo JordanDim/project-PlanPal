@@ -11,7 +11,7 @@ const showConfirmDialog = (message, onConfirm) => {
     () => (
       <div className="">
         <p className="flex justify-center">{message}</p>
-        <div className="inline-flex justify-items-center">
+        <div className="inline-flex justify-items-center gap-4">
           <button
             onClick={() => {
               onConfirm();
