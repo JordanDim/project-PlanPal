@@ -61,7 +61,7 @@ export default function PanelLists({ setCurrentView, list, allContacts }) {
             <div tabIndex={0} role="button" className="btn-ghost">
               <Plus />
             </div>
-            <ul className="dropdown-content grid menu p-2 shadow bg-base-100 rounded-box overflow-auto h-auto max-h-48">
+            <ul className="dropdown-content grid menu p-2 shadow bg-base-100 rounded-box overflow-auto h-auto max-h-96">
               <li className="menu-title">
                 <span>Contacts</span>
               </li>
