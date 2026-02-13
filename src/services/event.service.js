@@ -250,7 +250,6 @@ export const updateEvent = async (eventId, eventData) => {
     });
 
     await update(ref(db), updates);
-    console.log("Event updated successfully");
   } catch (error) {
     console.error("Error updating event:", error);
     throw error;
@@ -277,7 +276,6 @@ export const deleteEvent = async (eventId) => {
     updates[`events/${eventId}`] = null;
 
     await update(ref(db), updates);
-    console.log("Event deleted successfully");
     return true;
   } catch (error) {
     console.error("Error deleting event:", error);
@@ -343,7 +341,6 @@ export const inviteUser = async (
     updates[`users/${userToInviteHandle}/goingToEvents/${eventTitle}`] = true;
 
     await update(ref(db), updates);
-    console.log("User invited successfully");
     return true;
   } catch (error) {
     console.error("Error inviting user:", error);
@@ -368,7 +365,6 @@ export const uninviteUser = async (eventId, userHandle) => {
     updates[`users/${userHandle}/goingToEvents/${eventTitle}`] = null;
 
     await update(ref(db), updates);
-    console.log("User disinvited successfully");
     return true;
   } catch (error) {
     console.error("Error disinviting user:", error);
@@ -409,7 +405,6 @@ export const inviteList = async (eventId, invitingUserHandle, listId) => {
     });
 
     await update(ref(db), updates);
-    console.log("Users from the contact list invited successfully");
     return true;
   } catch (error) {
     console.error("Error inviting users from the contact list:", error);

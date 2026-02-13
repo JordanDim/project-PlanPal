@@ -27,7 +27,6 @@ export const createUserHandle = async (userData) => {
     const userHandle = userData.handle.toLowerCase();
     userData.handle = userHandle;
     await set(ref(db, `users/${userHandle}`), userData);
-    console.log("User document written with ID: ", userData.uid);
   } catch (e) {
     console.error("Error adding document: ", e);
   }
@@ -38,7 +37,6 @@ export const updateUser = async (handle, userData) => {
     const userHandle = handle.toLowerCase();
     const userRef = ref(db, `users/${userHandle}`);
     await update(userRef, userData);
-    console.log("User updated successfully");
   } catch (error) {
     console.error("Error updating user:", error);
     throw error;

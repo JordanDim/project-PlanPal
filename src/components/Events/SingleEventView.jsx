@@ -31,10 +31,8 @@ export default function SingleEventView() {
       setLoading(true);
       setError(null);
 
-      console.log("Fetching event with ID:", eventId);
       try {
         const eventData = await getEventById(eventId);
-        console.log("Event data fetched:", eventData);
         setEvent(eventData);
 
         const avatars = {};

@@ -41,7 +41,6 @@ export default function ContactList({
             allContacts={allContacts}
             setCurrentView={setCurrentView}
           />
-          // console.log(list.key)
         ))}
     </div>
   );

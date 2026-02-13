@@ -35,7 +35,7 @@ const cardData = [
     name: "Yordan Dimitrov",
     title: "Junior Frontend Developer",
     linkedin: "https://www.linkedin.com/in/yordan-dimitrov-446105315/",
-    github: "https://github.com/JordanDim?tab=repositories",
+    github: "https://github.com/JordanDim",
   },
 ];
 

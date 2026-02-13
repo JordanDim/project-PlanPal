@@ -41,7 +41,6 @@ export default function PanelLists({ setCurrentView, list, allContacts }) {
     setContacts(updatedContacts);
     updateContact(listKey, updatedContacts);
   };
-  // console.log(list.contacts);
 
   return (
     <ul className="mb-4 p-4 bg-transparent rounded-lg shadow-xl">

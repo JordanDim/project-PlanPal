@@ -33,8 +33,6 @@ function Profile() {
           setUserData({ ...data });
           setOriginalData({ ...data });
           setAvatarPreview(data.avatar);
-        } else {
-          console.log("User not found");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -77,7 +75,6 @@ function Profile() {
       await updateUser(handle, { ...userData, avatar: avatarUrl });
       setIsEditing(false);
       setErrors({});
-      console.log("User updated successfully");
     } catch (error) {
       console.error("Error updating user:", error);
     }

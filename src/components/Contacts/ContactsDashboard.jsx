@@ -42,7 +42,6 @@ export default function ContactsDashboard() {
   const handleRemoveContact = (contactHandle) => {
     removeContact(userData.handle, contactHandle)
       .then(() => {
-        console.log("Contact removed");
         setAllContacts((prevContacts) =>
           prevContacts.filter((contact) => contact.handle !== contactHandle)
         );
