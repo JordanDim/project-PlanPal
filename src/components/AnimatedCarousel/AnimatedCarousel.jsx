@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { BASE } from "../../common/constants.js";
 import "./AnimatedCarousel.css";
 
 const images = [
@@ -9,7 +10,7 @@ const images = [
     url: "https://react.dev/",
   },
   {
-    src: "https://seeklogo.com/images/G/greensock-gsap-icon-logo-13BB451E88-seeklogo.com.png",
+    src: `${BASE}gsap-logo.svg`,
     url: "https://gsap.com/",
   },
   {

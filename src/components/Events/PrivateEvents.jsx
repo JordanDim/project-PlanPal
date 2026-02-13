@@ -51,7 +51,7 @@ export default function PrivateEvents() {
       <div className="absolute top-0 right-0 mt-4 mr-4 z-10">
         <GoBackArrow onClick={() => navigate(`${BASE}events`)} />
       </div>
-      <div className="flex flex-col space-y-6 mt-4">
+      <div className="flex flex-col space-y-8 mt-4">
         {events.length === 0 ? (
           <div className="text-center text-gray-600">
             No private events found.

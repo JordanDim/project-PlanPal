@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import {
   AboutUs,
-  ContactUs,
   GithubIcon,
   GithubIssues,
 } from "../common/helpers/icons.jsx";
@@ -16,9 +15,6 @@ export default function Footer() {
         <nav>
           <h6 className=" font-semibold uppercase ">Team 03</h6>
           <div className="footer-icons grid grid-flow-col gap-4 mt-1">
-            <button onClick={() => navigate(`${BASE}contact-us`)}>
-              <ContactUs />
-            </button>
             <button onClick={() => navigate(`${BASE}about`)}>
               <AboutUs />
             </button>
@@ -27,7 +23,7 @@ export default function Footer() {
         <nav>
           <h6 className="font-semibold uppercase ">Project</h6>
           <div className="footer-icons grid grid-flow-col gap-4 mt-1">
-            <a href="https://github.com/ReactProjectA58/PlanPal">
+            <a href="https://github.com/JordanDim/project-PlanPal.git">
               <GithubIcon />
             </a>
             <a href="https://github.com/orgs/ReactProjectA58/projects/1">

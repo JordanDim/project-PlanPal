@@ -40,7 +40,7 @@ const TopThreeEvents = () => {
       <div className="flex justify-center items-center mb-4">
         <h1 className="text-4xl font-bold">Check Out Our Hot Events</h1>
       </div>
-      <ul>
+      <ul className="flex flex-col space-y-8">
         {events.map((event) => (
           <EventItem key={event.id} event={event} />
         ))}

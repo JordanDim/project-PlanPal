@@ -175,7 +175,7 @@ export default function AllEvents() {
           </details>
         </div>
       </div>
-      <div className="flex flex-col space-y-6 mt-4">
+      <div className="flex flex-col space-y-8 mt-4">
         {events.length === 0 ? (
           <div className="text-center text-gray-600">No events found.</div>
         ) : (

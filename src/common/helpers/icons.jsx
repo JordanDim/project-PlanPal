@@ -42,9 +42,6 @@ export const AboutUs = () => {
   return <FontAwesomeIcon icon={faAddressCard} size="2x" />;
 };
 
-export const ContactUs = () => {
-  return <FontAwesomeIcon icon={faPhone} size="2x" />;
-};
 
 export const MagnGlass = () => {
   return <FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-600" />;

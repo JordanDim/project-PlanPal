@@ -49,7 +49,7 @@ export default function PublicEvents() {
         <h1 className="text-4xl text-center font-bold ">Public Events</h1>
         <GoBackArrow onClick={() => navigate(`${BASE}events`)} />
       </div>
-      <div className="flex flex-col space-y-6 mt-4">
+      <div className="flex flex-col space-y-8 mt-4">
         {events.length === 0 ? (
           <div className="text-center">No public events found.</div>
         ) : (
