@@ -60,7 +60,7 @@ export default function PanelLists({ setCurrentView, list, allContacts }) {
             <div tabIndex={0} role="button" className="btn-ghost">
               <Plus />
             </div>
-            <ul className="dropdown-content grid menu p-2 shadow bg-base-100 rounded-box overflow-auto h-auto max-h-96">
+            <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box overflow-auto h-auto max-h-96 z-[1000]">
               <li className="menu-title">
                 <span>Contacts</span>
               </li>
@@ -71,7 +71,7 @@ export default function PanelLists({ setCurrentView, list, allContacts }) {
                     false;
                   return (
                     <li key={contact.handle}>
-                      <label className="label cursor-pointer">
+                      <label className="label cursor-pointer w-full justify-start">
                         <input
                           type="checkbox"
                           className="checkbox checkbox-md"

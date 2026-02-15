@@ -99,10 +99,10 @@ export default function CreateEvent() {
   }, [userData]);
 
   const updateEvent = (value, key) => {
-    setEvent({
-      ...event,
+    setEvent((prevEvent) => ({
+      ...prevEvent,
       [key]: value,
-    });
+    }));
   };
 
   const handleFileChange = (e) => {

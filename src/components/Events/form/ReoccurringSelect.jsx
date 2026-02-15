@@ -23,12 +23,12 @@ export default function ReoccurringSelect({
   );
 
   const handleSelect = (option) => {
-    onUpdate(option.value);
-    onToggle(false);
     if (["weekly", "monthly", "yearly"].includes(option.value)) {
       onFinalDateChange("");
       onIndefiniteChange(false);
     }
+    onUpdate(option.value);
+    onToggle(false);
   };
 
   return (
